@@ -33,9 +33,13 @@ class User{
         string Access_Password();
         bool Verify_Password();
         bool Check_Password_in_File(string);
+        //Borrowed Items
+        void Borrow_Item(string, string, string);
         //Other Functions
         bool Login();
         void Purchase_Recommendation(string, string);
+        
+
 };
 
 class Student : public User{
@@ -46,7 +50,6 @@ class Student : public User{
         Mutate_User_Type("STU");
     }
     void Student_Menu();
-    void Borrow_Item(string, string);
     
 };
 
@@ -58,7 +61,6 @@ class Faculty : public User{
         Mutate_User_Type("FAC");
     }
     void Faculty_Menu();
-    void Borrow_Item(string, string);
     
 };
 

@@ -17,11 +17,14 @@ using namespace std;
 //Function declarations/prototypes
     void Welcome();
     string Generate_Library_Identifier(string, int&);
-    bool Is_Valid_Library_Identifier(string);
+    bool Is_Valid_Library_Identifier(string&);
+    string Get_Library_Identifier();
+    bool Is_Present_In_Inventory(string);
     void Generate_Setup_Files(string, string, string, int&);
     string Create_Login_Credentials(string, string, string);
     void Generate_Login_Credentials();
     void Generate_Purchase_Recommendations();
+    void Generate_Borrow_Record();
     bool Is_Valid_Choice(string& , int , int);
     int Get_Valid_Choice(int, int);
     void Print_Catalogue_Menu();
@@ -32,5 +35,11 @@ using namespace std;
     void Search_Inventory(string, string, string);
     string Get_Date_Time();
     void Requests_Log(string, string, string, string, string);
+    string Find_File(string);
+    bool Is_Present_In_File(string, string);
+    string Get_Issue_Duration(string, string);
+    void Update_Borrow_Record(string, string, string, string);
+    void Update_Borrowed_Item_File(string, string, string, string, string);
+    void View_Borrow_Logs();
     void Exit_Protocol();
 #endif

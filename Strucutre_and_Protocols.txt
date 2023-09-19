@@ -32,6 +32,7 @@
             $ Delete_Item
         -> View Requests Logs
         -> View Purchase Recommendations
+        -> View Borrow Logs
 
 
 ----Items----------------------------------------------------
@@ -47,6 +48,9 @@
 4. Newspapers
     1.1 Physical_Copy
     1.2 Electronic_Copy
+
+% Setup Files
+    -> Library_Identifier is always the first column of any file
 
 
 ----Important Class Functions--------------------------------

@@ -24,6 +24,7 @@ int main(){
     Generate_Setup_Files(books_path, journals_path, magazines_path, Physical_Location);
     Generate_Login_Credentials();
     Generate_Purchase_Recommendations();
+    Generate_Borrow_Record();
 
     //Variable declarations
     int choice, start=1, stop=5;

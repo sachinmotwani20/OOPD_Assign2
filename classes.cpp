@@ -226,12 +226,22 @@ void User :: Purchase_Recommendation(string user_id, string date_time){
     file.close();
 }
 
+void User :: Borrow_Item(string user_id, string issue_date_time, string library_identifier){
+    
+    string File_Name  = Find_File(library_identifier);
 
-//-------------"Student" Class-------------//
-
-void Student :: Borrow_Item(string user_id, string date_time){
+    if (File_Name=="") {
+        cout<<"Item not found."<<endl;
+        return;
+    }
+    else{
+        Update_Borrow_Record(user_id, issue_date_time, Get_Issue_Duration(user_id, library_identifier), library_identifier);
+        Update_Borrowed_Item_File(user_id, issue_date_time, Get_Issue_Duration(user_id, library_identifier), library_identifier, File_Name);
+    }   
     
 }
+
+//-------------"Student" Class-------------//
 
 void Student :: Student_Menu(){
     int selection,start=1,stop=5;
@@ -260,7 +270,9 @@ void Student :: Student_Menu(){
                 break;
                 }
         case 3: {
-                Borrow_Item(Access_User_Id(), Get_Date_Time());
+                cout<<"Provide Library Identifier of the item you want to borrow: "<<endl;
+                string L_Identifier = Get_Library_Identifier();
+                Borrow_Item(Access_User_Id(), Get_Date_Time(), L_Identifier);
                 break;
                 }
         case 4: {
@@ -281,10 +293,6 @@ void Student :: Student_Menu(){
 }
 
 //-------------"Faculty" Class-------------//
-
-void Borrow_Item(string user_id, string date_time){
-    
-}
 
 void Faculty :: Faculty_Menu(){
     int selection,start=1,stop=5;
@@ -313,7 +321,9 @@ void Faculty :: Faculty_Menu(){
                 break;
                 }
         case 3: {
-                Borrow_Item(Access_User_Id(), Get_Date_Time());
+                cout<<"Provide Library Identifier of the item you want to borrow: "<<endl;
+                string L_Identifier = Get_Library_Identifier();
+                Borrow_Item(Access_User_Id(), Get_Date_Time(), L_Identifier);
                 break;
                 }
         case 4: {
@@ -505,6 +515,8 @@ void LibraryStaff :: Delete_User(){
         }
     }
 
+    file.close();
+
     ifstream file1(File_Name);
     ofstream file2("Data/temp.csv"); 
 
@@ -513,7 +525,7 @@ void LibraryStaff :: Delete_User(){
     }
 
     string row1;
-    while (getline(file1, row1)) { //Run though the 'while' loop for every line in the file
+    while (getline(file1, row1)) { 
 
         string user_id_in_file, password_in_file, name_in_file, user_type_in_file;
         stringstream input_string(row1); //To parse the data read into the stringstream
@@ -1669,7 +1681,8 @@ void LibraryStaff :: LibraryStaff_Menu(){
         cout<<"4. Manage Inventory"<<endl;
         cout<<"5. View Requests Logs"<<endl;
         cout<<"6. View Purchase Recommendations"<<endl;
-        cout<<"7. Exit Menu"<<endl; 
+        cout<<"7. View Borrow Logs"<<endl;
+        cout<<"8. Exit Menu"<<endl; 
         selection = Get_Valid_Choice(start, stop);
         switch (selection) {
         case 1: {
@@ -1701,6 +1714,10 @@ void LibraryStaff :: LibraryStaff_Menu(){
                 break;
                 }
         case 7: {
+                View_Borrow_Logs();
+                break;
+                }
+        case 8: {
                 break;
                 }
         
