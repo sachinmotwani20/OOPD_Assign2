@@ -15,5 +15,5 @@ make Code_debug
 
 -> For optimizer
 ```
-make Code_optimizer
+make Code_optimize
 ```
