@@ -581,11 +581,7 @@ void LibraryStaff :: Add_New_User(){
             cout<<"Invalid password. Please enter a valid password."<<endl;
         }
         
-    }
-
-    cout<<"Enter the Name: ";
-    getline(cin, name);
-    
+    }    
 
     file<<user_type<<','<<user_id<<","<<password<<endl;
     cout<<"User added successfully."<<endl;
@@ -693,7 +689,11 @@ void LibraryStaff :: Add_Electronic_Book(){
     }
 
     string book_id, goodreads_book_id, best_book_id, work_id,books_count,isbn,isbn13,authors,original_publication_year,original_title,title,language_code,average_rating,ratings_count,work_ratings_count,work_text_reviews_count,ratings_1,ratings_2,ratings_3,ratings_4,ratings_5,image_url,small_image_url, Library_Identifier, Physical_Copy_Available ;
-
+    int physical_location = 10000;
+    Library_Identifier = Generate_Library_Identifier("ELC", physical_location);
+    cout<<"The auto-generated Library_Identifier is "<< Library_Identifier<< endl;
+    cout<<"Enter Physical_Copy_Available"<<endl;
+    getline(cin, Physical_Copy_Available);
     cout<<"Enter book_id"<<endl;
     getline(cin, book_id);
     cout<<"Enter goodreads_book_id"<<endl;
@@ -740,12 +740,9 @@ void LibraryStaff :: Add_Electronic_Book(){
     getline(cin, image_url);
     cout<<"Enter small_image_url"<<endl;
     getline(cin, small_image_url);
-    int physical_location = 10000;
-    cout<<"The auto-generated Library_Identifier is "<< Generate_Library_Identifier("ELC", physical_location)<< endl;
-    cout<<"Enter Physical_Copy_Available"<<endl;
-    getline(cin, Physical_Copy_Available);
+    
 
-    file<<book_id<<", "<<goodreads_book_id<<", "<<best_book_id<<", "<<work_id<<", "<<books_count<<", "<<isbn<<", "<<isbn13<<", "<<authors<<", "<<original_publication_year<<", "<<original_title<<", "<<title<<", "<<language_code<<", "<<average_rating<<", "<<ratings_count<<", "<<work_ratings_count<<", "<<work_text_reviews_count<<", "<<ratings_1<<", "<<ratings_2<<", "<<ratings_3<<", "<<ratings_4<<", "<<ratings_5<<", "<<image_url<<", "<<small_image_url<<", "<<Library_Identifier<<", "<<Physical_Copy_Available<<endl;
+    file<<Library_Identifier<<","<<Physical_Copy_Available<<","<<book_id<<","<<goodreads_book_id<<","<<best_book_id<<","<<work_id<<","<<books_count<<","<<isbn<<","<<isbn13<<","<<authors<<","<<original_publication_year<<","<<original_title<<","<<title<<","<<language_code<<","<<average_rating<<","<<ratings_count<<","<<work_ratings_count<<","<<work_text_reviews_count<<","<<ratings_1<<","<<ratings_2<<","<<ratings_3<<","<<ratings_4<<","<<ratings_5<<","<<image_url<<","<<small_image_url<<endl;
 
     cout<<"Item added successfully."<<endl;
     file.close();
@@ -760,8 +757,18 @@ void LibraryStaff :: Add_Physical_Book(){
         cout << "Error opening user database file: " << File_Name << endl;
     }
 
-    string book_id, goodreads_book_id, best_book_id, work_id,books_count,isbn,isbn13,authors,original_publication_year,original_title,title,language_code,average_rating,ratings_count,work_ratings_count,work_text_reviews_count,ratings_1,ratings_2,ratings_3,ratings_4,ratings_5,image_url,small_image_url, Library_Identifier, Electronic_Copy_Available, Issue_Status, Checked_Out_Date_And_Time, Return_Date_And_Time ;
-
+    string Library_Identifier, Electronic_Copy_Available, Issue_Status, Checked_Out_Date_And_Time, Issue_Duration, book_id, goodreads_book_id, best_book_id, work_id,books_count,isbn,isbn13,authors,original_publication_year,original_title,title,language_code,average_rating,ratings_count,work_ratings_count,work_text_reviews_count,ratings_1,ratings_2,ratings_3,ratings_4,ratings_5,image_url,small_image_url;
+    int physical_location = 10000;
+    Library_Identifier = Generate_Library_Identifier("PHY", physical_location);
+    cout<<"The auto-generated Library_Identifier is "<< Library_Identifier<< endl;
+    cout<<"Enter Electronic_Copy_Available"<<endl;
+    getline(cin, Electronic_Copy_Available);
+    cout<<"Enter Issue_Status"<<endl;
+    getline(cin, Issue_Status);
+    cout<<"Enter Checked_Out_Date_And_Time"<<endl;
+    getline(cin, Checked_Out_Date_And_Time);
+    cout<<"Enter Issue Duration"<<endl;
+    getline(cin, Issue_Duration);
     cout<<"Enter book_id"<<endl;
     getline(cin, book_id);
     cout<<"Enter goodreads_book_id"<<endl;
@@ -808,18 +815,8 @@ void LibraryStaff :: Add_Physical_Book(){
     getline(cin, image_url);
     cout<<"Enter small_image_url"<<endl;
     getline(cin, small_image_url);
-    int physical_location = 10000;
-    cout<<"The auto-generated Library_Identifier is "<< Generate_Library_Identifier("PHY", physical_location)<< endl;
-    cout<<"Enter Electronic_Copy_Available"<<endl;
-    getline(cin, Electronic_Copy_Available);
-    cout<<"Enter Issue_Status"<<endl;
-    getline(cin, Issue_Status);
-    cout<<"Enter Checked_Out_Date_And_Time"<<endl;
-    getline(cin, Checked_Out_Date_And_Time);
-    cout<<"Enter Return_Date_And_Time"<<endl;
-    getline(cin, Return_Date_And_Time);
 
-    file<<book_id<<", "<<goodreads_book_id<<", "<<best_book_id<<", "<<work_id<<", "<<books_count<<", "<<isbn<<", "<<isbn13<<", "<<authors<<", "<<original_publication_year<<", "<<original_title<<", "<<title<<", "<<language_code<<", "<<average_rating<<", "<<ratings_count<<", "<<work_ratings_count<<", "<<work_text_reviews_count<<", "<<ratings_1<<", "<<ratings_2<<", "<<ratings_3<<", "<<ratings_4<<", "<<ratings_5<<", "<<image_url<<", "<<small_image_url<<", "<<Library_Identifier<<", "<<Electronic_Copy_Available<<", "<<Issue_Status<<", "<<Checked_Out_Date_And_Time<<", "<<Return_Date_And_Time<<endl;
+    file<<Library_Identifier<<","<<Electronic_Copy_Available<<","<<Issue_Status<<","<<Checked_Out_Date_And_Time<<","<<Issue_Duration<<","<<book_id<<","<<goodreads_book_id<<","<<best_book_id<<","<<work_id<<","<<books_count<<","<<isbn<<","<<isbn13<<","<<authors<<","<<original_publication_year<<","<<original_title<<","<<title<<","<<language_code<<","<<average_rating<<","<<ratings_count<<","<<work_ratings_count<<","<<work_text_reviews_count<<","<<ratings_1<<","<<ratings_2<<","<<ratings_3<<","<<ratings_4<<","<<ratings_5<<","<<image_url<<","<<small_image_url<<endl;
 
     cout<<"Item added successfully."<<endl;
     file.close();
@@ -835,17 +832,18 @@ void LibraryStaff :: Add_Electronic_Journal(){
         cout << "Error opening user database file: " << File_Name << endl;
     }
 
+    int physical_location = 10000;
     string Topic, Library_Identifier, Physical_Copy_Available ;
 
-    cout<<"Enter Topic"<<endl;
-    getline(cin, Topic);
-    int physical_location = 10000;
-    cout<<"The auto-generated Library_Identifier is "<< Generate_Library_Identifier("ELC", physical_location)<< endl;
+    Library_Identifier= Generate_Library_Identifier("ELC", physical_location);
+    cout<<"The auto-generated Library_Identifier is "<< Library_Identifier<< endl;
     cout<<"Enter Physical_Copy_Available"<<endl;
     getline(cin, Physical_Copy_Available);
+    cout<<"Enter Topic"<<endl;
+    getline(cin, Topic);
 
-    file<<Topic<<", "<<Library_Identifier<<", "<<Physical_Copy_Available<<endl;
-
+    file<<Library_Identifier<<","<<Physical_Copy_Available<<","<<Topic<<endl;
+    
     cout<<"Item added successfully."<<endl;
     file.close();
 }
@@ -858,23 +856,22 @@ void LibraryStaff :: Add_Physical_Journal(){
     if (!file.is_open()) {
         cout << "Error opening user database file: " << File_Name << endl;
     }
-
-    string Topic, Library_Identifier, Electronic_Copy_Available, Issue_Status, Checked_Out_Date_And_Time, Return_Date_And_Time ;
-
-    cout<<"Enter Topic"<<endl;
-    getline(cin, Topic);
     int physical_location = 10000;
-    cout<<"The auto-generated Library_Identifier is "<< Generate_Library_Identifier("PHY", physical_location)<< endl;
+    string Library_Identifier, Electronic_Copy_Available, Issue_Status, Checked_Out_Date_And_Time, Issue_Duration, Topic;
+    Library_Identifier = Generate_Library_Identifier("PHY", physical_location);
+    cout<<"The auto-generated Library_Identifier is "<< Library_Identifier<< endl;
     cout<<"Enter Electronic_Copy_Available"<<endl;
     getline(cin, Electronic_Copy_Available);
     cout<<"Enter Issue_Status"<<endl;
     getline(cin, Issue_Status);
     cout<<"Enter Checked_Out_Date_And_Time"<<endl;
     getline(cin, Checked_Out_Date_And_Time);
-    cout<<"Enter Return_Date_And_Time"<<endl;
-    getline(cin, Return_Date_And_Time);
+    cout<<"Enter Issue Duration"<<endl;
+    getline(cin, Issue_Duration);
+    cout<<"Enter Topic"<<endl;
+    getline(cin, Topic);
 
-    file<<Topic<<", "<<Library_Identifier<<", "<<Electronic_Copy_Available<<", "<<Issue_Status<<", "<<Checked_Out_Date_And_Time<<", "<<Return_Date_And_Time<<endl;
+    file<<Library_Identifier<<","<<Electronic_Copy_Available<<","<<Issue_Status<<","<<Checked_Out_Date_And_Time<<","<<Issue_Duration<<","<<Topic<<endl;
 
     cout<<"Item added successfully."<<endl;
     file.close();
@@ -889,8 +886,13 @@ void LibraryStaff :: Add_Electronic_Magazine(){
         cout << "Error opening user database file: " << File_Name << endl;
     }
 
+    int physical_location = 10000;
     string publication, rank, totalPaid, wordRate, daysToBePaid, paymentDifficulty, rank_totalPaid, rank_wordRate, rank_daysToBePaid, rank_paymentDifficulty, Library_Identifier, Physical_Copy_Available ;
-
+    Library_Identifier= Generate_Library_Identifier("ELC", physical_location);
+    
+    cout<<"The auto-generated Library_Identifier is "<< Library_Identifier<< endl;
+    cout<<"Enter Physical_Copy_Available"<<endl;
+    getline(cin, Physical_Copy_Available);
     cout<<"Enter publication"<<endl;
     getline(cin, publication);
     cout<<"Enter rank"<<endl;
@@ -911,12 +913,8 @@ void LibraryStaff :: Add_Electronic_Magazine(){
     getline(cin, rank_daysToBePaid);
     cout<<"Enter rank_paymentDifficulty"<<endl;
     getline(cin, rank_paymentDifficulty);
-    int physical_location = 10000;
-    cout<<"The auto-generated Library_Identifier is "<< Generate_Library_Identifier("ELC", physical_location)<< endl;
-    cout<<"Enter Physical_Copy_Available"<<endl;
-    getline(cin, Physical_Copy_Available);
 
-    file<<publication<<", "<<rank<<", "<<totalPaid<<", "<<wordRate<<", "<<daysToBePaid<<", "<<paymentDifficulty<<", "<<rank_totalPaid<<", "<<rank_wordRate<<", "<<rank_daysToBePaid<<", "<<rank_paymentDifficulty<<", "<<Library_Identifier<<", "<<Physical_Copy_Available<<endl;
+    file<<Library_Identifier<<","<<Physical_Copy_Available<<","<<publication<<","<<rank<<","<<totalPaid<<","<<wordRate<<","<<daysToBePaid<<","<<paymentDifficulty<<","<<rank_totalPaid<<","<<rank_wordRate<<","<<rank_daysToBePaid<<","<<rank_paymentDifficulty<<endl;
 
     cout<<"Item added successfully."<<endl;
     file.close();
@@ -930,9 +928,19 @@ void LibraryStaff :: Add_Physical_Magazine(){
         if (!file.is_open()) {
             cout << "Error opening user database file: " << File_Name << endl;
         }
-    
-        string publication, rank, totalPaid, wordRate, daysToBePaid, paymentDifficulty, rank_totalPaid, rank_wordRate, rank_daysToBePaid, rank_paymentDifficulty, Library_Identifier, Electronic_Copy_Available, Issue_Status, Checked_Out_Date_And_Time, Return_Date_And_Time ;
-    
+        int physical_location = 10000;
+        string publication, rank, totalPaid, wordRate, daysToBePaid, paymentDifficulty, rank_totalPaid, rank_wordRate, rank_daysToBePaid, rank_paymentDifficulty, Library_Identifier, Electronic_Copy_Available, Issue_Status, Checked_Out_Date_And_Time, Issue_Duration;
+        Library_Identifier = Generate_Library_Identifier("PHY", physical_location);
+
+        cout<<"The auto-generated Library_Identifier is "<< Library_Identifier<< endl;
+        cout<<"Enter Electronic_Copy_Available"<<endl;
+        getline(cin, Electronic_Copy_Available);
+        cout<<"Enter Issue_Status"<<endl;
+        getline(cin, Issue_Status);
+        cout<<"Enter Checked_Out_Date_And_Time"<<endl;
+        getline(cin, Checked_Out_Date_And_Time);
+        cout<<"Enter Issue Duration"<<endl;
+        getline(cin, Issue_Duration);
         cout<<"Enter publication"<<endl;
         getline(cin, publication);
         cout<<"Enter rank"<<endl;
@@ -953,42 +961,32 @@ void LibraryStaff :: Add_Physical_Magazine(){
         getline(cin, rank_daysToBePaid);
         cout<<"Enter rank_paymentDifficulty"<<endl;
         getline(cin, rank_paymentDifficulty);
-        int physical_location = 10000;
-        cout<<"The auto-generated Library_Identifier is "<< Generate_Library_Identifier("PHY", physical_location)<< endl;
-        cout<<"Enter Electronic_Copy_Available"<<endl;
-        getline(cin, Electronic_Copy_Available);
-        cout<<"Enter Issue_Status"<<endl;
-        getline(cin, Issue_Status);
-        cout<<"Enter Checked_Out_Date_And_Time"<<endl;
-        getline(cin, Checked_Out_Date_And_Time);
-        cout<<"Enter Return_Date_And_Time"<<endl;
-        getline(cin, Return_Date_And_Time);
-    
-        file<<publication<<", "<<rank<<", "<<totalPaid<<", "<<wordRate<<", "<<daysToBePaid<<", "<<paymentDifficulty<<", "<<rank_totalPaid<<", "<<rank_wordRate<<", "<<rank_daysToBePaid<<", "<<rank_paymentDifficulty<<", "<<Library_Identifier<<", "<<Electronic_Copy_Available<<", "<<Issue_Status<<", "<<Checked_Out_Date_And_Time<<", "<<Return_Date_And_Time<<endl;
-    
+        
+        file<<Library_Identifier<<","<<Electronic_Copy_Available<<","<<Issue_Status<<","<<Checked_Out_Date_And_Time<<","<<Issue_Duration<<","<<publication<<","<<rank<<","<<totalPaid<<","<<wordRate<<","<<daysToBePaid<<","<<paymentDifficulty<<","<<rank_totalPaid<<","<<rank_wordRate<<","<<rank_daysToBePaid<<","<<rank_paymentDifficulty<<endl;
+
         cout<<"Item added successfully."<<endl;
         file.close();
 }
 
 void LibraryStaff :: Add_Electronic_Newspaper(){
                     
-    string File_Name = "Data/Modified/Electronic_Newspapers.csv";
+    string File_Name = "Data/Modified/Electronic_Newspaper.csv";
     ofstream file(File_Name, ios::app); 
     
     if (!file.is_open()) {
         cout << "Error opening user database file: " << File_Name << endl;
     }
-    
-    string Name, Library_Identifier, Physical_Copy_Available ;
 
-    cout<<"Enter Name"<<endl;
-    getline(cin, Name);
-    int physical_location = 10000;
-    cout<<"The auto-generated Library_Identifier is "<< Generate_Library_Identifier("ELC", physical_location)<< endl;
+    int physical_location = 10000;    
+    string Name, Library_Identifier= Generate_Library_Identifier("ELC", physical_location), Physical_Copy_Available ;
+
+    cout<<"The auto-generated Library_Identifier is "<< Library_Identifier << endl;
     cout<<"Enter Physical_Copy_Available"<<endl;
     getline(cin, Physical_Copy_Available);
+    cout<<"Enter Name"<<endl;
+    getline(cin, Name);
 
-    file<<Name<<", "<<Library_Identifier<<", "<<Physical_Copy_Available<<endl;
+    file<<Library_Identifier<<","<<Physical_Copy_Available<<","<<Name<<endl;
 
     cout<<"Item added successfully."<<endl;
     file.close();
@@ -1003,22 +1001,23 @@ void LibraryStaff :: Add_Physical_Newspaper(){
         cout << "Error opening user database file: " << File_Name << endl;
     }
     
-    string Name, Library_Identifier, Electronic_Copy_Available, Issue_Status, Checked_Out_Date_And_Time, Return_Date_And_Time ;
-
-    cout<<"Enter Name"<<endl;
-    getline(cin, Name);
     int physical_location = 10000;
-    cout<<"The auto-generated Library_Identifier is "<< Generate_Library_Identifier("PHY", physical_location)<< endl;
+    string Name, Library_Identifier, Electronic_Copy_Available, Issue_Status, Checked_Out_Date_And_Time, Issue_Duration ;
+    Library_Identifier= Generate_Library_Identifier("PHY", physical_location);
+    
+    cout<<"The auto-generated Library_Identifier is "<< Library_Identifier<< endl;
     cout<<"Enter Electronic_Copy_Available"<<endl;
     getline(cin, Electronic_Copy_Available);
     cout<<"Enter Issue_Status"<<endl;
     getline(cin, Issue_Status);
     cout<<"Enter Checked_Out_Date_And_Time"<<endl;
     getline(cin, Checked_Out_Date_And_Time);
-    cout<<"Enter Return_Date_And_Time"<<endl;
-    getline(cin, Return_Date_And_Time);
+    cout<<"Enter Issue Duration"<<endl;
+    getline(cin, Issue_Duration);
+    cout<<"Enter Name"<<endl;
+    getline(cin, Name);
 
-    file<<Name<<", "<<Library_Identifier<<", "<<Electronic_Copy_Available<<", "<<Issue_Status<<", "<<Checked_Out_Date_And_Time<<", "<<Return_Date_And_Time<<endl;
+    file<<Library_Identifier<<","<<Electronic_Copy_Available<<","<<Issue_Status<<","<<Checked_Out_Date_And_Time<<","<<Issue_Duration<<","<<Name<<endl;
 
     cout<<"Item added successfully."<<endl;
     file.close();
@@ -1041,8 +1040,8 @@ void LibraryStaff :: Add_New_Item(){
         case 1: {
                 int choice, start=1, stop=2;
                 cout<<"What type of book do you want to add?"<<endl;
-                cout<<"1. Electronic Book";
-                cout<<"2. Physical Book";
+                cout<<"1. Electronic Book"<<endl;
+                cout<<"2. Physical Book"<<endl;
                 choice = Get_Valid_Choice(start, stop);
                 switch(choice){
                     case 1: {
@@ -1063,8 +1062,8 @@ void LibraryStaff :: Add_New_Item(){
         case 2: {
                 int choice, start=1, stop=2;
                 cout<<"What type of journal do you want to add?"<<endl;
-                cout<<"1. Electronic Journal";
-                cout<<"2. Physical Journal";
+                cout<<"1. Electronic Journal"<<endl;
+                cout<<"2. Physical Journal"<<endl;
                 choice = Get_Valid_Choice(start, stop);
                 switch(choice){
                     case 1: {
@@ -1085,8 +1084,8 @@ void LibraryStaff :: Add_New_Item(){
         case 3: {
                 int choice, start=1, stop=2;
                 cout<<"What type of magazine do you want to add?"<<endl;
-                cout<<"1. Electronic Magazine";
-                cout<<"2. Physical Magazine";
+                cout<<"1. Electronic Magazine"<<endl;
+                cout<<"2. Physical Magazine"<<endl;
                 choice = Get_Valid_Choice(start, stop);
                 switch(choice){
                     case 1: {
@@ -1107,8 +1106,8 @@ void LibraryStaff :: Add_New_Item(){
         case 4: {
                 int choice, start=1, stop=2;
                 cout<<"What type of newspaper do you want to add?"<<endl;
-                cout<<"1. Electronic Newspaper";
-                cout<<"2. Physical Newspaper";
+                cout<<"1. Electronic Newspaper"<<endl;
+                cout<<"2. Physical Newspaper"<<endl;
                 choice = Get_Valid_Choice(start, stop);
                 switch(choice){
                     case 1: {
@@ -1162,40 +1161,18 @@ void LibraryStaff :: Delete_Electronic_Book() {
 
     string row1;
     while (getline(file1, row1)) { 
-
-        string book_id_in_file, goodreads_book_id, best_book_id, work_id,books_count,isbn,isbn13,authors,original_publication_year,original_title,title,language_code,average_rating,ratings_count,work_ratings_count,work_text_reviews_count,ratings_1,ratings_2,ratings_3,ratings_4,ratings_5,image_url,small_image_url, Library_Identifier, Physical_Copy_Available;
+        bool is_row_to_delete = false;
+        string Library_Identifier;
         stringstream input_string(row1); 
-        
-        getline(input_string, book_id_in_file, ','); 
-        getline(input_string, goodreads_book_id, ','); 
-        getline(input_string, best_book_id, ','); 
-        getline(input_string, work_id, ',');
-        getline(input_string, books_count, ','); 
-        getline(input_string, isbn, ','); 
-        getline(input_string, isbn13, ','); 
-        getline(input_string, authors, ','); 
-        getline(input_string, original_publication_year, ','); 
-        getline(input_string, original_title, ','); 
-        getline(input_string, title, ','); 
-        getline(input_string, language_code, ','); 
-        getline(input_string, average_rating, ','); 
-        getline(input_string, ratings_count, ','); 
-        getline(input_string, work_ratings_count, ','); 
-        getline(input_string, work_text_reviews_count, ',');
-        getline(input_string, ratings_1, ','); 
-        getline(input_string, ratings_2, ','); 
-        getline(input_string, ratings_3, ','); 
-        getline(input_string, ratings_4, ','); 
-        getline(input_string, ratings_5, ','); 
-        getline(input_string, image_url, ','); 
-        getline(input_string, small_image_url, ','); 
-        getline(input_string, Library_Identifier, ','); 
-        getline(input_string, Physical_Copy_Available, ',');
-
+        getline(input_string, Library_Identifier, ',');
         if (Library_Identifier == Library_Identifier_to_delete) { 
+            is_row_to_delete = true;
+        }
+        
+        if (is_row_to_delete) { 
             continue;
         } else {
-            file2<<book_id_in_file<<", "<<goodreads_book_id<<", "<<best_book_id<<", "<<work_id<<", "<<books_count<<", "<<isbn<<", "<<isbn13<<", "<<authors<<", "<<original_publication_year<<", "<<original_title<<", "<<title<<", "<<language_code<<", "<<average_rating<<", "<<ratings_count<<", "<<work_ratings_count<<", "<<work_text_reviews_count<<", "<<ratings_1<<", "<<ratings_2<<", "<<ratings_3<<", "<<ratings_4<<", "<<ratings_5<<", "<<image_url<<", "<<small_image_url<<", "<<Library_Identifier<<", "<<Physical_Copy_Available<<endl;
+            file2<<row1<<endl;
         }
     }
 
@@ -1231,43 +1208,19 @@ void LibraryStaff :: Delete_Physical_Book(){
 
     string row1;
     while (getline(file1, row1)) { 
-
-        string book_id_in_file, goodreads_book_id, best_book_id, work_id,books_count,isbn,isbn13,authors,original_publication_year,original_title,title,language_code,average_rating,ratings_count,work_ratings_count,work_text_reviews_count,ratings_1,ratings_2,ratings_3,ratings_4,ratings_5,image_url,small_image_url, Library_Identifier, Electronic_Copy_Available, Issue_Status, Checked_Out_Date_And_Time, Return_Date_And_Time;
+        bool is_row_to_delete = false;
+        string book_id_in_file, goodreads_book_id, best_book_id, work_id,books_count,isbn,isbn13,authors,original_publication_year,original_title,title,language_code,average_rating,ratings_count,work_ratings_count,work_text_reviews_count,ratings_1,ratings_2,ratings_3,ratings_4,ratings_5,image_url,small_image_url, Library_Identifier, Electronic_Copy_Available, Issue_Status, Checked_Out_Date_And_Time, Issue_Duration;
         stringstream input_string(row1); 
         
-        getline(input_string, book_id_in_file, ','); 
-        getline(input_string, goodreads_book_id, ','); 
-        getline(input_string, best_book_id, ','); 
-        getline(input_string, work_id, ',');
-        getline(input_string, books_count, ','); 
-        getline(input_string, isbn, ','); 
-        getline(input_string, isbn13, ','); 
-        getline(input_string, authors, ','); 
-        getline(input_string, original_publication_year, ','); 
-        getline(input_string, original_title, ','); 
-        getline(input_string, title, ','); 
-        getline(input_string, language_code, ','); 
-        getline(input_string, average_rating, ','); 
-        getline(input_string, ratings_count, ','); 
-        getline(input_string, work_ratings_count, ','); 
-        getline(input_string, work_text_reviews_count, ',');
-        getline(input_string, ratings_1, ','); 
-        getline(input_string, ratings_2, ','); 
-        getline(input_string, ratings_3, ','); 
-        getline(input_string, ratings_4, ',');
-        getline(input_string, ratings_5, ',');
-        getline(input_string, image_url, ',');
-        getline(input_string, small_image_url, ',');
         getline(input_string, Library_Identifier, ',');
-        getline(input_string, Electronic_Copy_Available, ',');
-        getline(input_string, Issue_Status, ',');
-        getline(input_string, Checked_Out_Date_And_Time, ',');
-        getline(input_string, Return_Date_And_Time, ',');
-
         if (Library_Identifier == Library_Identifier_to_delete) { 
+            is_row_to_delete = true;
+        }
+
+        if (is_row_to_delete) { 
             continue;
         } else {
-            file2<<book_id_in_file<<", "<<goodreads_book_id<<", "<<best_book_id<<", "<<work_id<<", "<<books_count<<", "<<isbn<<", "<<isbn13<<", "<<authors<<", "<<original_publication_year<<", "<<original_title<<", "<<title<<", "<<language_code<<", "<<average_rating<<", "<<ratings_count<<", "<<work_ratings_count<<", "<<work_text_reviews_count<<", "<<ratings_1<<", "<<ratings_2<<", "<<ratings_3<<", "<<ratings_4<<", "<<ratings_5<<", "<<image_url<<", "<<small_image_url<<", "<<Library_Identifier<<", "<<Electronic_Copy_Available<<", "<<Issue_Status<<", "<<Checked_Out_Date_And_Time<<", "<<Return_Date_And_Time<<endl;
+            file2<<row1<<endl;
         }
     }
 
@@ -1303,18 +1256,20 @@ void LibraryStaff :: Delete_Electronic_Journal(){
 
     string row1;
     while (getline(file1, row1)) { 
-
+        bool is_row_to_delete = false;
         string Topic_in_file, Library_Identifier, Physical_Copy_Available;
         stringstream input_string(row1); 
         
-        getline(input_string, Topic_in_file, ','); 
         getline(input_string, Library_Identifier, ','); 
-        getline(input_string, Physical_Copy_Available, ','); 
-
+        
         if (Library_Identifier == Library_Identifier_to_delete) { 
+            is_row_to_delete = true;
+        }
+
+        if (is_row_to_delete) { 
             continue;
         } else {
-            file2<<Topic_in_file<<", "<<Library_Identifier<<", "<<Physical_Copy_Available<<endl;
+            file2<<row1<<endl;
         }
     }
 
@@ -1350,21 +1305,20 @@ void LibraryStaff :: Delete_Physical_Journal(){
 
     string row1;
     while (getline(file1, row1)) { 
-
-        string Topic_in_file, Library_Identifier, Electronic_Copy_Available, Issue_Status, Checked_Out_Date_And_Time, Return_Date_And_Time;
+        bool is_row_to_delete = false;
+        string Topic_in_file, Library_Identifier, Electronic_Copy_Available, Issue_Status, Checked_Out_Date_And_Time, Issue_Duration;
         stringstream input_string(row1); 
         
-        getline(input_string, Topic_in_file, ','); 
         getline(input_string, Library_Identifier, ','); 
-        getline(input_string, Electronic_Copy_Available, ','); 
-        getline(input_string, Issue_Status, ','); 
-        getline(input_string, Checked_Out_Date_And_Time, ','); 
-        getline(input_string, Return_Date_And_Time, ','); 
-
+        
         if (Library_Identifier == Library_Identifier_to_delete) { 
+            is_row_to_delete = true;
+        }
+
+        if (is_row_to_delete) { 
             continue;
         } else {
-            file2<<Topic_in_file<<", "<<Library_Identifier<<", "<<Electronic_Copy_Available<<", "<<Issue_Status<<", "<<Checked_Out_Date_And_Time<<", "<<Return_Date_And_Time<<endl;
+            file2<<row1<<endl;
         }
     }
 
@@ -1400,28 +1354,23 @@ void LibraryStaff :: Delete_Electronic_Magazine(){
 
     string row1;
     while (getline(file1, row1)) { 
-
+        bool is_row_to_delete = false;
         string publication_in_file, rank, totalPaid, wordRate, daysToBePaid, paymentDifficulty, rank_totalPaid, rank_wordRate, rank_daysToBePaid, rank_paymentDifficulty, Library_Identifier, Physical_Copy_Available;
         stringstream input_string(row1); 
         
-        getline(input_string, publication_in_file, ','); 
-        getline(input_string, rank, ','); 
-        getline(input_string, totalPaid, ','); 
-        getline(input_string, wordRate, ','); 
-        getline(input_string, daysToBePaid, ','); 
-        getline(input_string, paymentDifficulty, ','); 
-        getline(input_string, rank_totalPaid, ','); 
-        getline(input_string, rank_wordRate, ','); 
-        getline(input_string, rank_daysToBePaid, ','); 
-        getline(input_string, rank_paymentDifficulty, ','); 
-        getline(input_string, Library_Identifier, ','); 
-        getline(input_string, Physical_Copy_Available, ','); 
+        getline(input_string, Library_Identifier, ',');
 
         if (Library_Identifier == Library_Identifier_to_delete) { 
+            is_row_to_delete = true;
+        }
+
+        if (is_row_to_delete) { 
             continue;
         } else {
-            file2<<publication_in_file<<", "<<rank<<", "<<totalPaid<<", "<<wordRate<<", "<<daysToBePaid<<", "<<paymentDifficulty<<", "<<rank_totalPaid<<", "<<rank_wordRate<<", "<<rank_daysToBePaid<<", "<<rank_paymentDifficulty<<", "<<Library_Identifier<<", "<<Physical_Copy_Available<<endl;
+            file2<<row1<<endl;
         }
+
+        
     }
 
     file1.close();
@@ -1457,30 +1406,20 @@ void LibraryStaff :: Delete_Physical_Magazine(){
 
     string row1;
     while (getline(file1, row1)) { 
-
-        string publication_in_file, rank, totalPaid, wordRate, daysToBePaid, paymentDifficulty, rank_totalPaid, rank_wordRate, rank_daysToBePaid, rank_paymentDifficulty, Library_Identifier, Electronic_Copy_Available, Issue_Status, Checked_Out_Date_And_Time, Return_Date_And_Time;
+        bool is_row_to_delete = false;
+        string publication_in_file, rank, totalPaid, wordRate, daysToBePaid, paymentDifficulty, rank_totalPaid, rank_wordRate, rank_daysToBePaid, rank_paymentDifficulty, Library_Identifier, Electronic_Copy_Available, Issue_Status, Checked_Out_Date_And_Time, Issue_Duration;
         stringstream input_string(row1); 
         
-        getline(input_string, publication_in_file, ','); 
-        getline(input_string, rank, ','); 
-        getline(input_string, totalPaid, ','); 
-        getline(input_string, wordRate, ','); 
-        getline(input_string, daysToBePaid, ','); 
-        getline(input_string, paymentDifficulty, ','); 
-        getline(input_string, rank_totalPaid, ','); 
-        getline(input_string, rank_wordRate, ','); 
-        getline(input_string, rank_daysToBePaid, ','); 
-        getline(input_string, rank_paymentDifficulty, ','); 
-        getline(input_string, Library_Identifier, ','); 
-        getline(input_string, Electronic_Copy_Available, ','); 
-        getline(input_string, Issue_Status, ','); 
-        getline(input_string, Checked_Out_Date_And_Time, ','); 
-        getline(input_string, Return_Date_And_Time, ','); 
+        getline(input_string, Library_Identifier, ',');
 
         if (Library_Identifier == Library_Identifier_to_delete) { 
+            is_row_to_delete = true;
+        }
+
+        if (is_row_to_delete) { 
             continue;
         } else {
-            file2<<publication_in_file<<", "<<rank<<", "<<totalPaid<<", "<<wordRate<<", "<<daysToBePaid<<", "<<paymentDifficulty<<", "<<rank_totalPaid<<", "<<rank_wordRate<<", "<<rank_daysToBePaid<<", "<<rank_paymentDifficulty<<", "<<Library_Identifier<<", "<<Electronic_Copy_Available<<", "<<Issue_Status<<", "<<Checked_Out_Date_And_Time<<", "<<Return_Date_And_Time<<endl;
+            file2<<row1<<endl;
         }
     }
 
@@ -1495,7 +1434,7 @@ void LibraryStaff :: Delete_Physical_Magazine(){
 }
 
 void LibraryStaff :: Delete_Electronic_Newspaper(){
-    string File_Name = "Data/Modified/Electronic_Newspapers.csv";
+    string File_Name = "Data/Modified/Electronic_Newspaper.csv";
 
     string Library_Identifier_to_delete;
     while (true) {
@@ -1517,18 +1456,20 @@ void LibraryStaff :: Delete_Electronic_Newspaper(){
 
     string row1;
     while (getline(file1, row1)) { 
-
+        bool is_row_to_delete = false;
         string Name_in_file, Library_Identifier, Physical_Copy_Available;
         stringstream input_string(row1); 
         
-        getline(input_string, Name_in_file, ','); 
         getline(input_string, Library_Identifier, ','); 
-        getline(input_string, Physical_Copy_Available, ','); 
-
+        
         if (Library_Identifier == Library_Identifier_to_delete) { 
+            is_row_to_delete = true;
+        }
+
+        if (is_row_to_delete) { 
             continue;
         } else {
-            file2<<Name_in_file<<", "<<Library_Identifier<<", "<<Physical_Copy_Available<<endl;
+            file2<<row1<<endl;
         }
     }
 
@@ -1564,22 +1505,22 @@ void LibraryStaff :: Delete_Physical_Newspaper(){
 
     string row1;
     while (getline(file1, row1)) { 
-
-        string Name_in_file, Library_Identifier, Electronic_Copy_Available, Issue_Status, Checked_Out_Date_And_Time, Return_Date_And_Time;
+        bool is_row_to_delete = false;
+        string Name_in_file, Library_Identifier, Electronic_Copy_Available, Issue_Status, Checked_Out_Date_And_Time, Issue_Duration;
         stringstream input_string(row1); 
         
-        getline(input_string, Name_in_file, ','); 
         getline(input_string, Library_Identifier, ','); 
-        getline(input_string, Electronic_Copy_Available, ','); 
-        getline(input_string, Issue_Status, ','); 
-        getline(input_string, Checked_Out_Date_And_Time, ','); 
-        getline(input_string, Return_Date_And_Time, ','); 
-
+        
         if (Library_Identifier == Library_Identifier_to_delete) { 
+            is_row_to_delete = true;
+        }
+
+        if (is_row_to_delete) { 
             continue;
         } else {
-            file2<<Name_in_file<<", "<<Library_Identifier<<", "<<Electronic_Copy_Available<<", "<<Issue_Status<<", "<<Checked_Out_Date_And_Time<<", "<<Return_Date_And_Time<<endl;
+            file2<<row1<<endl;
         }
+        
     }
 
     file1.close();
@@ -1609,8 +1550,8 @@ void LibraryStaff :: Delete_Item(){
         case 1: {
                 int choice, start=1, stop=2;
                 cout<<"Entry of what type of book do you want to delete?"<<endl;
-                cout<<"1. Electronic Book";
-                cout<<"2. Physical Book";
+                cout<<"1. Electronic Book"<<endl;
+                cout<<"2. Physical Book"<< endl;
                 choice = Get_Valid_Choice(start, stop);
                 switch(choice){
                     case 1: {
@@ -1631,8 +1572,8 @@ void LibraryStaff :: Delete_Item(){
         case 2: {
                 int choice, start=1, stop=2;
                 cout<<"Entry of what type of journal do you want to delete?"<<endl;
-                cout<<"1. Electronic Journal";
-                cout<<"2. Physical Journal";
+                cout<<"1. Electronic Journal"<<endl;
+                cout<<"2. Physical Journal"<<endl;
                 choice = Get_Valid_Choice(start, stop);
                 switch(choice){
                     case 1: {
@@ -1653,8 +1594,8 @@ void LibraryStaff :: Delete_Item(){
         case 3: {
                 int choice, start=1, stop=2;
                 cout<<"Entry of what type of magazine do you want to delete?"<<endl;
-                cout<<"1. Electronic Magazine";
-                cout<<"2. Physical Magazine";
+                cout<<"1. Electronic Magazine"<<endl;
+                cout<<"2. Physical Magazine"<<endl;
                 choice = Get_Valid_Choice(start, stop);
                 switch(choice){
                     case 1: {
@@ -1675,8 +1616,8 @@ void LibraryStaff :: Delete_Item(){
         case 4: {
                 int choice, start=1, stop=2;
                 cout<<"Entry of what type of newspaper do you want to delete?"<<endl;
-                cout<<"1. Electronic Newspaper";
-                cout<<"2. Physical Newspaper";
+                cout<<"1. Electronic Newspaper"<<endl;
+                cout<<"2. Physical Newspaper"<<endl;
                 choice = Get_Valid_Choice(start, stop);
                 switch(choice){
                     case 1: {

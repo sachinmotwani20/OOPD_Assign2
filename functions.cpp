@@ -171,8 +171,8 @@ string Generate_Library_Identifier(string copy_type, int& physical_location){
         file.close();
     }
 
-    if (Check_File_Exists("Data/Modified/Electronic_Newspapers.csv")){
-        ifstream file("Data/Modified/Electronic_Newspapers.csv");
+    if (Check_File_Exists("Data/Modified/Electronic_Newspaper.csv")){
+        ifstream file("Data/Modified/Electronic_Newspaper.csv");
         string row;
         while(getline(file, row)){
             stringstream input_string(row);
@@ -499,9 +499,10 @@ void Generate_Setup_Files(string original_books_file_path, string original_magaz
     } else {
         ofstream newspaper_electronic("Data/Modified/Electronic_Newspaper.csv");
         
+        //Header
         newspaper_electronic << "Library_Identifier" << ','; 
-        newspaper_electronic << "Name" << ',';
-        newspaper_electronic << "Physical_Copy_Available" << endl; 
+        newspaper_electronic << "Physical_Copy_Available" << ','; 
+        newspaper_electronic << "Name" << endl;
         
         newspaper_electronic.close();
 
@@ -513,13 +514,13 @@ void Generate_Setup_Files(string original_books_file_path, string original_magaz
     } else {
         ofstream newspaper_physical("Data/Modified/Physical_Newspaper.csv");
         
-        //Physical Newspaper
+        //Header
         newspaper_physical << "Library_Identifier" << ','; 
-        newspaper_physical << "Name" << ',';
         newspaper_physical << "Electronic_Copy_Available" << ','; 
         newspaper_physical << "Issue_Status" << ','; 
         newspaper_physical << "Checked_Out_Date_And_Time" << ','; 
-        newspaper_physical << "Issue_Duration" << endl; 
+        newspaper_physical << "Issue_Duration" << ',';
+        newspaper_physical << "Name" << endl;
         
         newspaper_physical.close();
         cout<<"Physical_Newspaper.csv generated."<<endl;
