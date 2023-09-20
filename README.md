@@ -8,18 +8,11 @@ g++ LMS.cpp functions.cpp classes.cpp -o LMS.exe
 
 Command to run Makefile:
 
--> For debug:
 ```
-make Code_debug
-```
-
--> For optimizer
-```
-make Code_optimize
+make 
 ```
 
-
-##Structure and Protocols
+## Structure and Protocols
 
 -----Users----------------------------------------------------------------
 
