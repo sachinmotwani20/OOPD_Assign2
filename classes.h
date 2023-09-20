@@ -43,6 +43,8 @@ class User{
         bool Check_Password_in_File(string);
         //Borrowed Items
         void Borrow_Item(string, string, string);
+        void Borrow_Item_Loan(string, string, string);
+        void Borrow_On_Loan_Menu(string,string);
         //Other Functions
         bool Login();
         void Purchase_Recommendation(string, string);
@@ -114,6 +116,8 @@ class LibraryStaff : public User{
     void Delete_Physical_Newspaper();
     void View_Requests_Logs();
     void View_Purchase_Recommendations();
+    void Print_EJournal_Statistics();
+    void Calculate_EJournal_Demand();
 };
 
 

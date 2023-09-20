@@ -233,7 +233,7 @@ bool Is_Valid_Library_Identifier(string& library_identifier){
                 if (islower(library_identifier[2])){
                     library_identifier[2]=toupper(library_identifier[2]);
                 }
-                if (isdigit(library_identifier[3]) && isdigit(library_identifier[4]) && isdigit(library_identifier[5])) {
+                if (isdigit(library_identifier[3]) && isdigit(library_identifier[4]) && isdigit(library_identifier[5]) && isdigit(library_identifier[6]) && isdigit(library_identifier[7])) {
                     return true;
                 }
             }
@@ -528,6 +528,55 @@ void Generate_Setup_Files(string original_books_file_path, string original_magaz
 
 }
 
+void Generate_Uni1_Items_Record(){
+    if (Check_File_Exists("Data/Modified/Uni1_Items_Record.csv")) {        
+        cout<<"Uni1_Items_Record.csv already exists."<<endl;
+    } else {
+        ofstream uni1_items_record("Data/Modified/Uni1_Items_Record.csv");
+        string row;
+        //Header Row
+        uni1_items_record << "Library_Identifier" << ','; 
+        uni1_items_record << "Item_Type [Book/Journal/Magazine/Newspaper]" << ','; 
+        uni1_items_record << "Item_Name/Topic" << ','; 
+        uni1_items_record << "Item_Author" << endl; 
+       
+
+        // 5 Sample Records
+        uni1_items_record << "UNI10001" << ','<< "Book" << ','<< "The Alchemist" << ','<< "Paulo Coelho" << endl;
+        uni1_items_record << "UNI10002" << ','<< "Book" << ','<< "The Kite Runner" << ','<< "Khaled Hosseini" << endl;
+        uni1_items_record << "UNI10003" << ','<< "Journal" << ','<< "Cytometry A" <<','<<"N/A"<< endl;
+        uni1_items_record << "UNI10004" << ','<< "Magazine" << ','<< "The Economist" <<','<<"N/A"<< endl;
+        uni1_items_record << "UNI10005" << ','<< "Newspaper" << ','<< "The Hindustan Times" <<','<<"N/A"<< endl;
+
+        uni1_items_record.close();
+        cout<<"Uni1_Items_Record.csv generated."<<endl;
+    }
+}
+
+void Generate_Uni2_Items_Record(){
+    if (Check_File_Exists("Data/Modified/Uni2_Items_Record.csv")) {        
+        cout<<"Uni2_Items_Record.csv already exists."<<endl;
+    } else {
+        ofstream uni2_items_record("Data/Modified/Uni2_Items_Record.csv");
+        string row;
+        //Header Row
+        uni2_items_record << "Library_Identifier" << ','; 
+        uni2_items_record << "Item_Type [Book/Journal/Magazine/Newspaper]" << ','; 
+        uni2_items_record << "Item_Name/Topic" << ','; 
+        uni2_items_record << "Item_Author" << endl; 
+
+        // 5 Sample Records
+        uni2_items_record << "UNI20001" << ','<< "Magazine" << ','<< "Champak" << ","<<"N/A"<< endl;
+        uni2_items_record << "UNI20002" << ','<< "Magazine" << ','<< "India Today" <<','<<"N/A"<< endl;
+        uni2_items_record << "UNI20003" << ','<< "Journal" << ','<< "Nature" <<','<<"N/A"<< endl;
+        uni2_items_record << "UNI20004" << ','<< "Newspaper" << ','<< "The Times of India" <<','<<"N/A"<< endl;
+        uni2_items_record << "UNI20005" << ','<< "Book" << ','<< "The Da Vinci Code" << ','<< "Dan Brown" << endl;
+
+        uni2_items_record.close();
+        cout<<"Uni2_Items_Record.csv generated."<<endl;
+    }
+}
+
 string Create_Login_Credentials(string user_type, string user_id, string password){
     string login_credentials = user_type + ',' + user_id + ',' + password;
     return login_credentials;
@@ -591,10 +640,23 @@ void Generate_Borrow_Record(){
     
               
         //Header Row
+        
         borrow_record << "User_Id" << ',';
         borrow_record << "Issue Date & Time" << ',';
-        borrow_record << "Issue Duration" << ',';
-        borrow_record << "Library Identifier of the Issued Item" << endl;
+        borrow_record << "Issue Duration" << ",";
+        borrow_record << "Library Identifier of the Issued Item"<< endl;
+        
+        // 10 Sample Records
+        borrow_record<<"FAC12345"<<","<<"20/9/2023 14:6:42"<<","<<"N/A"<<","<<"ELC10098"<<endl;
+        borrow_record<<"FAC12345"<<","<<"27/9/2023 14:7:21"<<","<<"6 Months"<<","<<"UNI10003"<<endl;
+        borrow_record<<"STU12345"<<","<<"27/9/2023 14:6:42"<<","<<"N/A"<<","<<"ELC10005"<<endl;
+        borrow_record<<"STU12345"<<","<<"27/8/2023 14:7:21"<<","<<"1 Month"<<","<<"PHY10001"<<endl;
+        borrow_record<<"STU12345"<<","<<"27/9/2023 14:6:42"<<","<<"N/A"<<","<<"ELC10005"<<endl;
+        borrow_record<<"STU12345"<<","<<"27/7/2023 14:7:21"<<","<<"N/A"<<","<<"ELC10005"<<endl;
+        borrow_record<<"STU12345"<<","<<"27/9/2023 14:6:42"<<","<<"N/A"<<","<<"ELC10016"<<endl;
+        borrow_record<<"STU12345"<<","<<"27/9/2023 14:7:21"<<","<<"N/A"<<","<<"ELC10005"<<endl;
+        borrow_record<<"STU12345"<<","<<"27/9/2023 14:6:42"<<","<<"N/A"<<","<<"ELC10026"<<endl;
+        borrow_record<<"FAC12345"<<","<<"27/9/2023 14:6:42"<<","<<"N/A"<<","<<"ELC10026"<<endl;
 
         borrow_record.close();
         cout<<"Borrow_Record.csv generated."<<endl;
@@ -899,6 +961,15 @@ void Search_Inventory(string File_Name, string Search_Term){
     file.close();        
 }
 
+string Delay_7_Days(string Date_Time){
+    time_t now = time(0);
+    tm *ltm = localtime(&now);
+    ltm->tm_mday += 7;
+    mktime(ltm);
+    string Return_Date_Time = to_string(ltm->tm_mday) + "/" + to_string(1 + ltm->tm_mon) + "/" + to_string(1900 + ltm->tm_year) + " " + to_string(ltm->tm_hour) + ":" + to_string(ltm->tm_min) + ":" + to_string(ltm->tm_sec);
+    return Return_Date_Time;
+}
+
 string Get_Date_Time(){
     time_t now = time(0);
     tm *ltm = localtime(&now);
@@ -937,11 +1008,56 @@ string Get_Library_Identifier(){
     return Library_Identifier;
 }
 
-bool Is_Present_In_File(string File_Name, string Library_Identifier){
-    ifstream file(File_Name);
+bool Is_Valid_Library_Identifier_Loan(string& library_identifier){
+    if (library_identifier.length() != 8) {
+        return false;
+    }
+
+
+    if (toupper(library_identifier[0]) == 'U') {
+        if (islower(library_identifier[0])){
+            library_identifier[0]=toupper(library_identifier[0]);
+        }
+        if (toupper(library_identifier[1]) == 'N') {
+            if (islower(library_identifier[1])){
+                library_identifier[1]=toupper(library_identifier[1]);
+            }
+            if (toupper(library_identifier[2]) == 'I') {
+                if (islower(library_identifier[2])){
+                    library_identifier[2]=toupper(library_identifier[2]);
+                }
+                if (isdigit(library_identifier[3]) && isdigit(library_identifier[4]) && isdigit(library_identifier[5]) && isdigit(library_identifier[6]) && isdigit(library_identifier[7])) {
+                    if ((library_identifier[3]=='1') || (library_identifier[3]=='2')){
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+    
+    return true;
+}
+
+string Get_Library_Identifier_Loan(){
+    string Library_Identifier;
+    while (true) {
+        cout<<"Enter the Library Identifier: ";
+        getline(cin, Library_Identifier);
+        cout<<Library_Identifier;
+        if (Is_Valid_Library_Identifier_Loan(Library_Identifier)) {
+            break;
+        } else {
+            cout<<"Invalid Library Identifier. Please enter a valid Library Identifier."<<endl;
+        }
+    }
+    return Library_Identifier;
+}
+
+bool Is_Present_In_File(string F_Name, string Library_Identifier){
+    ifstream file(F_Name);
 
     if (!file.is_open()) {
-        cout<<"Error: File '"<<File_Name<<"' not found."<<endl;
+        cout<<"Error: File '"<<F_Name<<"' not found."<<endl;
         return false;
     }
 
@@ -951,6 +1067,7 @@ bool Is_Present_In_File(string File_Name, string Library_Identifier){
         string data;
         while (getline(input_string, data, ',')) {
             if (data == Library_Identifier) {
+
                 file.close();
                 return true;
             }
@@ -970,6 +1087,9 @@ string Find_File(string library_identifier){
     string File_PMagazine = "Data/Modified/Physical_Magazines.csv";
     string File_ENewspaper = "Data/Modified/Electronic_Newspaper.csv";
     string File_PNewspaper = "Data/Modified/Physical_Newspaper.csv";
+    string File_Uni1 = "Data/Modified/Uni1_Items_Record.csv";
+    string File_Uni2 = "Data/Modified/Uni2_Items_Record.csv";
+
 
     if (Is_Present_In_File(File_EBook, library_identifier)){
         return File_EBook;
@@ -987,10 +1107,13 @@ string Find_File(string library_identifier){
         return File_ENewspaper;
     } else if (Is_Present_In_File(File_PNewspaper, library_identifier)){
         return File_PNewspaper;
+    } else if (Is_Present_In_File(File_Uni1, library_identifier)){
+        return File_Uni1;
+    } else if (Is_Present_In_File(File_Uni2, library_identifier)){
+        return File_Uni2;
     } else {
         return "";
-    }
-    
+    } 
     return "";
 }
 
@@ -1011,12 +1134,12 @@ string Get_Issue_Duration(string u_id, string l_identifier){
 void Update_Borrow_Record(string u_id, string issue_d_t, string issue_duration, string l_identifier){
     if (Check_File_Exists("Data/Borrow_Record.csv")) {        
         ofstream file("Data/Borrow_Record.csv", ios::app);
-        file<<u_id<<","<<issue_d_t<<","<<issue_duration<<","<<l_identifier<<endl;
+        file<<l_identifier<<","<<u_id<<","<<issue_d_t<<","<<issue_duration<<endl;
         file.close();
     } else {
         ofstream file("Data/Borrow_Record.csv");
-        file<<"User_Id"<<","<<"Issue_Date_And_Time"<<","<<"Issue_Duration"<<","<<"Library_Identifier"<<endl;
-        file<<u_id<<","<<issue_d_t<<","<<issue_duration<<","<<l_identifier<<endl;
+        file<<"Library_Identifier"<<","<<"User_Id"<<","<<"Issue_Date_And_Time"<<","<<"Issue_Duration"<<","<<endl;
+        file<<l_identifier<<","<<u_id<<","<<issue_d_t<<","<<issue_duration<<endl;
         file.close();
     }
 }

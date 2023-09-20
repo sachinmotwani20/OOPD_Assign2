@@ -46,8 +46,6 @@ bool User :: Check_User_ID_in_File(string u_id){
             stringstream input_string(row); //To parse the data read into the stringstream
             
             while(getline(input_string, user_id_in_file, ',')) {
-                // cout<<user_id_in_file<<endl;
-                // cout<<u_id<<endl;
                 if (user_id_in_file == u_id) { //Check if the user ID matches
                     file.close();
                     return true;
@@ -166,7 +164,7 @@ bool User :: Is_Valid_User_Id_Del_User(string& user_id, string u_type){
     }
 
     //Check Characters
-    for (int i=0; i< static_cast<int>(user_id.length()); i++) { //Run though the 'for' loop for every character in the string 'user_id' 
+    for (int i=0; i<static_cast<int>(user_id.length()); i++) { //Run though the 'for' loop for every character in the string 'user_id' 
         if (i<3) {
             if (isalpha(user_id[i])) { //First three characters
                 user_type_by_user_ID += toupper(user_id[i]);
@@ -336,10 +334,89 @@ void User :: Borrow_Item(string user_id, string issue_date_time, string library_
     
 }
 
+void User :: Borrow_Item_Loan(string user_id, string issue_date_time, string library_identifier){
+    
+    string File_Name  = Find_File(library_identifier);
+
+    if (File_Name=="") {
+        cout<<"Item not found."<<endl;
+        return;
+    }
+    else{
+        cout<<"Item found."<<endl;
+        Update_Borrow_Record(user_id, issue_date_time, Get_Issue_Duration(user_id, library_identifier), library_identifier);
+        cout<<"Borrowed item file updated."<<endl;
+    }   
+    
+}
+
+void User :: Borrow_On_Loan_Menu(string u_id, string i_d_t){
+    int selection, start=1, stop=5;
+    cout<<"---------------------------------"<<endl;
+    cout<<"**** Borrow On Loan Menu ****"<<endl;
+    cout<<"---------------------------------"<<endl;
+    do{
+        cout<<"What do you want to do?"<<endl;
+        cout<<"1. View University 1 Catalogue"<<endl;
+        cout<<"2. View University 2 Catalogue"<<endl;
+        cout<<"3. Borrow Item from University 1"<<endl;
+        cout<<"4. Borrow Item from University 2"<<endl;
+        cout<<"5. Exit"<<endl;
+        selection = Get_Valid_Choice(start, stop);
+        switch (selection) {
+        case 1: {
+                string File_Name = "Data/Modified/Uni1_Items_Record.csv";
+                Print_Items(File_Name);
+                break;
+                }
+        case 2: {
+                string File_Name = "Data/Modified/Uni2_Items_Record.csv";
+                Print_Items(File_Name);
+                break;
+                }
+        case 3: {
+                string F_Name = "Data/Modified/Uni1_Items_Record.csv";
+                string library_identifier = Get_Library_Identifier_Loan();
+                
+                if (Is_Present_In_File(F_Name, library_identifier)) {
+                    string u_id = Access_User_Id();
+                    string i_d_t = Delay_7_Days(Get_Date_Time());
+                    Borrow_Item_Loan(u_id, i_d_t, library_identifier);
+                    Requests_Log(Access_User_Id(), F_Name, library_identifier, Get_Date_Time() ); //Add to requests log
+                } else {
+                    cout<<endl<<"Item not found."<<endl;
+                }
+                break;
+                }
+        case 4: {
+                string F_Name = "Data/Modified/Uni2_Items_Record.csv";
+                string library_identifier = Get_Library_Identifier_Loan();
+                
+                if (Is_Present_In_File(F_Name, library_identifier)) {
+                    string u_id = Access_User_Id();
+                    string i_d_t = Delay_7_Days(Get_Date_Time());
+                    Borrow_Item_Loan(u_id, i_d_t, library_identifier);
+                    Requests_Log(Access_User_Id(), F_Name, library_identifier, Get_Date_Time() ); //Add to requests log
+                } else {
+                    cout<<endl<<"Item not found."<<endl;
+                }
+                break;
+                }
+        case 5: {
+                break;
+                }
+        default:{
+                cout<<"Invalid choice."<<endl;
+                break;
+                }
+        }
+    }while (selection!=stop);
+}
+
 //-------------"Student" Class-------------//
 
 void Student :: Student_Menu(){
-    int selection,start=1,stop=5;
+    int selection,start=1,stop=6;
     cout<<"---------------------------------"<<endl;
     cout<<"**** Student Menu****"<<endl;
     cout<<"---------------------------------"<<endl;
@@ -349,7 +426,8 @@ void Student :: Student_Menu(){
         cout<<"2. Search Inventory"<<endl;
         cout<<"3. Borrow Item"<<endl;
         cout<<"4. Recommend a Purchase"<<endl;
-        cout<<"5. Exit"<<endl;
+        cout<<"5. Borrow on Loan (Outside IIT Delhi)"<<endl;
+        cout<<"6. Exit"<<endl;
         selection = Get_Valid_Choice(start, stop);
         switch (selection) {
         case 1: {
@@ -378,6 +456,10 @@ void Student :: Student_Menu(){
                 break;
                 }
         case 5: {
+                Borrow_On_Loan_Menu(Access_User_Id(), Get_Date_Time());
+                break;
+                }
+        case 6: {
                 break;
                 }
         default:{
@@ -393,7 +475,7 @@ void Student :: Student_Menu(){
 //-------------"Faculty" Class-------------//
 
 void Faculty :: Faculty_Menu(){
-    int selection,start=1,stop=5;
+    int selection,start=1,stop=6;
     cout<<"---------------------------------"<<endl;
     cout<<"**** Faculty Menu****"<<endl;
     cout<<"---------------------------------"<<endl;
@@ -403,7 +485,8 @@ void Faculty :: Faculty_Menu(){
         cout<<"2. Search Inventory"<<endl;
         cout<<"3. Borrow Item"<<endl;
         cout<<"4. Recommend a Purchase"<<endl;
-        cout<<"5. Exit"<<endl;
+        cout<<"5. Borrow on Loan (Outside IIT Delhi)"<<endl;
+        cout<<"6. Exit"<<endl;
         selection = Get_Valid_Choice(start, stop);
         switch (selection) {
         case 1: {
@@ -432,6 +515,10 @@ void Faculty :: Faculty_Menu(){
                 break;
                 }
         case 5: {
+                Borrow_On_Loan_Menu(Access_User_Id(), Get_Date_Time());
+                break;
+                }
+        case 6: {
                 break;
                 }
         default:{
@@ -1706,8 +1793,71 @@ void LibraryStaff :: View_Purchase_Recommendations(){
     file.close();
 }
 
+void LibraryStaff :: Print_EJournal_Statistics(){
+    string EJournal_File = "Data/Modified/Electronic_Journals.csv";
+    string Borrow_Record = "Data/Borrow_Record.csv";
+
+    ifstream file1(EJournal_File);
+    ifstream file2(Borrow_Record);
+
+    if (!file1.is_open()) {
+        cout << "Error opening user database file: " << EJournal_File << endl;
+    }
+    if (!file2.is_open()) {
+        cout << "Error opening user database file: " << Borrow_Record << endl;
+    }
+
+    string row;
+    int row_number = 0;
+    while (getline(file1, row)){
+        string l_id_in_file="";
+        stringstream input_string(row);
+        int count=0;
+
+        getline(input_string, l_id_in_file, ','); //Got L_ID from EJournal File
+        string row1;
+        
+        while (getline(file2, row1)) { 
+            string temp;
+            string l_id_in_borrow_record="";
+            stringstream input_string1(row1);
+            getline(input_string1,temp, ','); //User ID
+            getline(input_string1,temp, ','); //Issue Date
+            getline(input_string1,temp, ','); //Issue Duration
+            getline(input_string1, l_id_in_borrow_record, ','); //Got L_ID from Borrow Record File
+            if(l_id_in_file==l_id_in_borrow_record){
+                count++;
+            }
+        }
+        file2.clear();
+        file2.seekg(0, ios::beg);
+        if (row_number!=0 && count!=0){
+            cout<<setw(9)<<l_id_in_file<<" : "<<count<<endl;
+        }
+        row_number++;
+    }
+    
+}
+
+void LibraryStaff :: Calculate_EJournal_Demand(){
+    string File_Name = "Data/Modified/Electronic_Journals.csv";
+    ifstream file(File_Name);
+    if (!file.is_open()) {
+        cout << "Error opening user database file: " << File_Name << endl;
+    }
+    string row;
+    int count=0;
+    while (getline(file, row)) { 
+        count++;
+    }
+    file.close();
+    cout<<"The number of electronic journals in the library is "<<count<<endl;
+    cout<<"The library_identifier of the electronic journals and the corresponding number of times those were borrowed:"<<endl;
+    Print_EJournal_Statistics();
+}
+
 void LibraryStaff :: LibraryStaff_Menu(){
-    int selection,start=1,stop=8;
+    int selection,start=1,stop=9;
     cout<<"---------------------------------"<<endl;
     cout<<"**** Library Staff Menu****"<<endl;
     cout<<"---------------------------------"<<endl;
@@ -1720,7 +1870,8 @@ void LibraryStaff :: LibraryStaff_Menu(){
         cout<<"5. View Requests Logs"<<endl;
         cout<<"6. View Purchase Recommendations"<<endl;
         cout<<"7. View Borrow Logs"<<endl;
-        cout<<"8. Exit Menu"<<endl; 
+        cout<<"8. Find E-Journal Demand Statistics at IIIT-Delhi"<<endl;
+        cout<<"9. Exit Menu"<<endl; 
         selection = Get_Valid_Choice(start, stop);
         switch (selection) {
         case 1: {
@@ -1757,9 +1908,12 @@ void LibraryStaff :: LibraryStaff_Menu(){
                 break;
                 }
         case 8: {
+                Calculate_EJournal_Demand();
                 break;
                 }
-        
+        case 9:{
+                break;
+                }
         default:{
                 cout<<"Invalid choice."<<endl;
                 break;
