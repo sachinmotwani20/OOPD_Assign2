@@ -881,8 +881,6 @@ void Search_Inventory(string File_Name, string Search_Term){
     while (getline(file, row)) {
         istringstream input_string(row);
         string data;
-        char current_character;
-        bool inside_quotes = false;
 
         if (row.find(Search_Term) != string::npos) {
             found++;

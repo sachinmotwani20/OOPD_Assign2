@@ -71,7 +71,7 @@ bool User :: Is_Valid_User_Id(string& user_id, string u_type){
     }
 
     //Check Characters
-    for (int i=0; i<user_id.length(); i++) { //Run though the 'for' loop for every character in the string 'user_id' 
+    for (int i=0; i< static_cast<int>(user_id.length()); i++) { //Run though the 'for' loop for every character in the string 'user_id' 
         if (i<3) {
             if (isalpha(user_id[i])) { //First three characters
                 user_type_by_user_ID += toupper(user_id[i]);
@@ -121,7 +121,7 @@ bool User :: Is_Valid_User_Id_Add_User(string& user_id, string u_type){
     }
 
     //Check Characters
-    for (int i=0; i<user_id.length(); i++) { //Run though the 'for' loop for every character in the string 'user_id' 
+    for (int i=0; i<static_cast<int>(user_id.length()); i++) { //Run though the 'for' loop for every character in the string 'user_id' 
         if (i<3) {
             if (isalpha(user_id[i])) { //First three characters
                 user_type_by_user_ID += toupper(user_id[i]);
@@ -166,7 +166,7 @@ bool User :: Is_Valid_User_Id_Del_User(string& user_id, string u_type){
     }
 
     //Check Characters
-    for (int i=0; i<user_id.length(); i++) { //Run though the 'for' loop for every character in the string 'user_id' 
+    for (int i=0; i< static_cast<int>(user_id.length()); i++) { //Run though the 'for' loop for every character in the string 'user_id' 
         if (i<3) {
             if (isalpha(user_id[i])) { //First three characters
                 user_type_by_user_ID += toupper(user_id[i]);
@@ -518,7 +518,7 @@ bool LibraryStaff :: Is_Valid_Password(string password){
     } 
 
     bool has_upper = false, has_lower = false, has_digit = false, has_special = false;
-    for (int i=0; i<password.length(); i++) {
+    for (int i=0; i<static_cast<int>(password.length()); i++) {
         if (isupper(password[i])) {
             has_upper = true;
         } else if (islower(password[i])) {
