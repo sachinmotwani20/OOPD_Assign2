@@ -336,10 +336,89 @@ void User :: Borrow_Item(string user_id, string issue_date_time, string library_
     
 }
 
+void User :: Borrow_Item_Loan(string user_id, string issue_date_time, string library_identifier){
+    
+    string File_Name  = Find_File(library_identifier);
+
+    if (File_Name=="") {
+        cout<<"Item not found."<<endl;
+        return;
+    }
+    else{
+        cout<<"Item found."<<endl;
+        Update_Borrow_Record(user_id, issue_date_time, Get_Issue_Duration(user_id, library_identifier), library_identifier);
+        cout<<"Borrowed item file updated."<<endl;
+    }   
+    
+}
+
+void User :: Borrow_On_Loan_Menu(string u_id, string i_d_t){
+    int selection, start=1, stop=5;
+    cout<<"---------------------------------"<<endl;
+    cout<<"**** Borrow On Loan Menu ****"<<endl;
+    cout<<"---------------------------------"<<endl;
+    do{
+        cout<<"What do you want to do?"<<endl;
+        cout<<"1. View University 1 Catalogue"<<endl;
+        cout<<"2. View University 2 Catalogue"<<endl;
+        cout<<"3. Borrow Item from University 1"<<endl;
+        cout<<"4. Borrow Item from University 2"<<endl;
+        cout<<"5. Exit"<<endl;
+        selection = Get_Valid_Choice(start, stop);
+        switch (selection) {
+        case 1: {
+                string File_Name = "Data/Modified/Uni1_Items_Record.csv";
+                Print_Items(File_Name);
+                break;
+                }
+        case 2: {
+                string File_Name = "Data/Modified/Uni2_Items_Record.csv";
+                Print_Items(File_Name);
+                break;
+                }
+        case 3: {
+                string F_Name = "Data/Modified/Uni1_Items_Record.csv";
+                string library_identifier = Get_Library_Identifier_Loan();
+                
+                if (Is_Present_In_File(F_Name, library_identifier)) {
+                    string u_id = Access_User_Id();
+                    string i_d_t = Delay_7_Days(Get_Date_Time());
+                    Borrow_Item_Loan(u_id, i_d_t, library_identifier);
+                    Requests_Log(Access_User_Id(), F_Name, library_identifier, Get_Date_Time() ); //Add to requests log
+                } else {
+                    cout<<endl<<"Item not found."<<endl;
+                }
+                break;
+                }
+        case 4: {
+                string F_Name = "Data/Modified/Uni2_Items_Record.csv";
+                string library_identifier = Get_Library_Identifier_Loan();
+                
+                if (Is_Present_In_File(F_Name, library_identifier)) {
+                    string u_id = Access_User_Id();
+                    string i_d_t = Delay_7_Days(Get_Date_Time());
+                    Borrow_Item_Loan(u_id, i_d_t, library_identifier);
+                    Requests_Log(Access_User_Id(), F_Name, library_identifier, Get_Date_Time() ); //Add to requests log
+                } else {
+                    cout<<endl<<"Item not found."<<endl;
+                }
+                break;
+                }
+        case 5: {
+                break;
+                }
+        default:{
+                cout<<"Invalid choice."<<endl;
+                break;
+                }
+        }
+    }while (selection!=stop);
+}
+
 //-------------"Student" Class-------------//
 
 void Student :: Student_Menu(){
-    int selection,start=1,stop=5;
+    int selection,start=1,stop=6;
     cout<<"---------------------------------"<<endl;
     cout<<"**** Student Menu****"<<endl;
     cout<<"---------------------------------"<<endl;
@@ -349,7 +428,8 @@ void Student :: Student_Menu(){
         cout<<"2. Search Inventory"<<endl;
         cout<<"3. Borrow Item"<<endl;
         cout<<"4. Recommend a Purchase"<<endl;
-        cout<<"5. Exit"<<endl;
+        cout<<"5. Borrow on Loan (Outside IIT Delhi)"<<endl;
+        cout<<"6. Exit"<<endl;
         selection = Get_Valid_Choice(start, stop);
         switch (selection) {
         case 1: {
@@ -378,6 +458,10 @@ void Student :: Student_Menu(){
                 break;
                 }
         case 5: {
+                Borrow_On_Loan_Menu(Access_User_Id(), Get_Date_Time());
+                break;
+                }
+        case 6: {
                 break;
                 }
         default:{
@@ -393,7 +477,7 @@ void Student :: Student_Menu(){
 //-------------"Faculty" Class-------------//
 
 void Faculty :: Faculty_Menu(){
-    int selection,start=1,stop=5;
+    int selection,start=1,stop=6;
     cout<<"---------------------------------"<<endl;
     cout<<"**** Faculty Menu****"<<endl;
     cout<<"---------------------------------"<<endl;
@@ -403,7 +487,8 @@ void Faculty :: Faculty_Menu(){
         cout<<"2. Search Inventory"<<endl;
         cout<<"3. Borrow Item"<<endl;
         cout<<"4. Recommend a Purchase"<<endl;
-        cout<<"5. Exit"<<endl;
+        cout<<"5. Borrow on Loan (Outside IIT Delhi)"<<endl;
+        cout<<"6. Exit"<<endl;
         selection = Get_Valid_Choice(start, stop);
         switch (selection) {
         case 1: {
@@ -432,6 +517,10 @@ void Faculty :: Faculty_Menu(){
                 break;
                 }
         case 5: {
+                Borrow_On_Loan_Menu(Access_User_Id(), Get_Date_Time());
+                break;
+                }
+        case 6: {
                 break;
                 }
         default:{

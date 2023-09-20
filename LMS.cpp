@@ -25,6 +25,8 @@ int main(){
     Generate_Login_Credentials();
     Generate_Purchase_Recommendations();
     Generate_Borrow_Record();
+    Generate_Uni1_Items_Record();
+    Generate_Uni2_Items_Record();
 
     //Variable declarations
     int choice, start=1, stop=5;

@@ -43,6 +43,8 @@ class User{
         bool Check_Password_in_File(string);
         //Borrowed Items
         void Borrow_Item(string, string, string);
+        void Borrow_Item_Loan(string, string, string);
+        void Borrow_On_Loan_Menu(string,string);
         //Other Functions
         bool Login();
         void Purchase_Recommendation(string, string);

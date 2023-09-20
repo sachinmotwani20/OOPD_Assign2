@@ -21,6 +21,8 @@ using namespace std;
     string Generate_Library_Identifier(string, int&);
     bool Is_Valid_Library_Identifier(string&);
     string Get_Library_Identifier();
+    bool Is_valid_Library_Identifier_Loan(string&);
+    string Get_Library_Identifier_Loan();
     bool Is_Present_In_Inventory(string);
     void Generate_Setup_Files(string, string, string, int&);
     string Create_Login_Credentials(string, string, string);
@@ -34,6 +36,7 @@ using namespace std;
     string Get_Search_File();
     string Get_Search_Item();
     void Search_Inventory(string, string);
+    string Delay_7_Days(string);
     string Get_Date_Time();
     void Requests_Log(string, string, string, string);
     string Find_File(string);
@@ -42,7 +45,8 @@ using namespace std;
     void Update_Borrow_Record(string, string, string, string);
     void Update_Borrowed_Item_File(string, string, string, string, string);
     void View_Borrow_Logs();
+    void Generate_Uni1_Items_Record();
+    void Generate_Uni2_Items_Record();
     void Exit_Protocol();
-
 
 #endif
