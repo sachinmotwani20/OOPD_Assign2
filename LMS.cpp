@@ -13,15 +13,15 @@ using namespace std;
 #include "classes.h"
 #include "functions.h"
 
-string books_path="/Data/books.csv";
-string journals_path="/Data/journals.csv";
-string magazines_path="/Data/magazines.csv";
+string books_path="Data/books.csv";
+string journals_path="Data/journals.csv";
+string magazines_path="Data/magazines.csv";
 int Physical_Location= 10000;
 
 
 int main(){
     //Setup;
-    Generate_Setup_Files(books_path, journals_path, magazines_path, Physical_Location);
+    Generate_Setup_Files(books_path, magazines_path, journals_path,  Physical_Location);
     Generate_Login_Credentials();
     Generate_Purchase_Recommendations();
     Generate_Borrow_Record();

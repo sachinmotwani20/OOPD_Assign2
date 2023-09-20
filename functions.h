@@ -16,6 +16,8 @@ using namespace std;
 
 //Function declarations/prototypes
     void Welcome();
+    bool Check_File_Exists(string);
+    bool Check_Folder_Exists(string);
     string Generate_Library_Identifier(string, int&);
     bool Is_Valid_Library_Identifier(string&);
     string Get_Library_Identifier();
@@ -30,11 +32,10 @@ using namespace std;
     void Print_Catalogue_Menu();
     void Print_Items(string);
     string Get_Search_File();
-    string Get_Search_Column(string);
-    string Get_Search_Item(string, string);
-    void Search_Inventory(string, string, string);
+    string Get_Search_Item();
+    void Search_Inventory(string, string);
     string Get_Date_Time();
-    void Requests_Log(string, string, string, string, string);
+    void Requests_Log(string, string, string, string);
     string Find_File(string);
     bool Is_Present_In_File(string, string);
     string Get_Issue_Duration(string, string);
@@ -42,4 +43,6 @@ using namespace std;
     void Update_Borrowed_Item_File(string, string, string, string, string);
     void View_Borrow_Logs();
     void Exit_Protocol();
+
+
 #endif

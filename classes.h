@@ -22,13 +22,21 @@ class User{
         int physical_location=10000;
     public:
         //User Type
-        string Access_User_Type();
-        void Mutate_User_Type(string );
+        string Access_User_Type(){
+               return user_type;
+        }
+
+        void Mutate_User_Type(string user_type_entered){
+            user_type = user_type_entered;
+        }
+
         //User ID
         string Access_User_Id(); //Getters
         void Mutate_User_Id(); //Setters
-        bool Check_User_ID_in_File(string user_id);
-        bool Is_Valid_User_Id(string& user_id, string& user_type);
+        bool Check_User_ID_in_File(string);
+        bool Is_Valid_User_Id(string& , string);
+        bool Is_Valid_User_Id_Add_User(string&, string);
+        bool Is_Valid_User_Id_Del_User(string& , string);
         //Password
         string Access_Password();
         bool Verify_Password();

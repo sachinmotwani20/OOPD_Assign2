@@ -8,6 +8,7 @@
 #include <cctype> //To use isdigit()
 #include <windows.h> //To use Sleep() in windows 
 
+
 using namespace std;
 
 #include "classes.h"
@@ -17,33 +18,11 @@ using namespace std;
 
 //-------------"User" Class-------------//
 
-string User :: Access_User_Type(){
-    return user_type;
-}
-
-void User :: Mutate_User_Type(string user_type_entered){
-    user_type = user_type_entered;
-}
-
 string User :: Access_User_Id(){
     return user_id;
 }
 
-void User :: Mutate_User_Id(){
-    while (true) {
-        cout<<"Enter your User ID: "<<endl;
-        getline(cin, user_id); 
-        string user_type = Access_User_Type();
-        if (Is_Valid_User_Id(user_id, user_type )) {
-            break;
-        } else {
-            cout << "Invalid input. Please enter a valid User ID." << endl;
-        }
-    cout<<"User ID is an alphanumeric of 3 letters ('STU','FAC', or, 'EMP') followed by a 5-digit number (Roll number / Employee ID)."<<endl;
-    }
-}
-
-bool User :: Check_User_ID_in_File(string user_id){
+bool User :: Check_User_ID_in_File(string u_id){
     string File_Name = "Data/Login_Credentials.csv";
     
     ifstream file(File_Name); //Open the file
@@ -60,46 +39,49 @@ bool User :: Check_User_ID_in_File(string user_id){
         return false;
     } else {
         string row;
-        while (getline(file, row)) { //Run though the 'while' loop for every line in the file
+        
+        while (getline(file, row)) { 
 
-            string user_id_in_file;
+            string user_id_in_file="";
             stringstream input_string(row); //To parse the data read into the stringstream
             
-            getline(input_string, user_id_in_file, ','); //Get the user ID from the stringstream
-            
-            if (user_id_in_file == user_id) { //Check if the user ID matches
-                file.close();
-                return true;
+            while(getline(input_string, user_id_in_file, ',')) {
+                // cout<<user_id_in_file<<endl;
+                // cout<<u_id<<endl;
+                if (user_id_in_file == u_id) { //Check if the user ID matches
+                    file.close();
+                    return true;
+                }
             }
         }
-        cout<<"User ID does not exist in the database."<<endl;
         file.close();
         return false;
     }
 
 }
 
-bool User :: Is_Valid_User_Id(string& user_id, string& user_type){
+bool User :: Is_Valid_User_Id(string& user_id, string u_type){
 
-    string user_type_by_user_ID;
+    string user_type_by_user_ID="";
 
     // Check Length
     if (user_id.length() != 8) {
         cout<<"Invalid length. User ID must be 8 AlphaNumeric characters long."<<endl;
         return false; // Invalid length
     }
-    
+
     //Check Characters
     for (int i=0; i<user_id.length(); i++) { //Run though the 'for' loop for every character in the string 'user_id' 
         if (i<3) {
             if (isalpha(user_id[i])) { //First three characters
+                user_type_by_user_ID += toupper(user_id[i]);
                 continue;
             } else {
                 cout<<"Invalid character(s) found. User ID must start with three letters."<<endl;
                 return false; 
             }
-            user_type_by_user_ID += toupper(user_id[i]);
-        } else if (i>2) { //Last five characters
+
+        } else { //Last five characters
             if (isdigit(user_id[i])) {
                 continue;
             } else if (user_id[i] == '.') {
@@ -113,7 +95,8 @@ bool User :: Is_Valid_User_Id(string& user_id, string& user_type){
     }
 
     //Check User Type
-    if (user_type_by_user_ID != user_type){
+
+    if (user_type_by_user_ID != u_type){
         cout<<"User Type does not match the type of user mentioned in the User ID."<<endl;
         return false; // Invalid nomenclature
     }
@@ -127,26 +110,116 @@ bool User :: Is_Valid_User_Id(string& user_id, string& user_type){
     return true; 
 }
 
-bool User :: Login(){
-   bool verify_user=false;
-   Mutate_User_Id();
-   verify_user = Verify_Password();
-    if (verify_user) {
-        cout<<"Login successful."<<endl;
-        verify_user = true; 
-    } else {
-        cout<<"Login unsuccessful."<<endl;
+bool User :: Is_Valid_User_Id_Add_User(string& user_id, string u_type){
+
+    string user_type_by_user_ID="";
+
+    // Check Length
+    if (user_id.length() != 8) {
+        cout<<"Invalid length. User ID must be 8 AlphaNumeric characters long."<<endl;
+        return false; // Invalid length
     }
-    return verify_user;
+
+    //Check Characters
+    for (int i=0; i<user_id.length(); i++) { //Run though the 'for' loop for every character in the string 'user_id' 
+        if (i<3) {
+            if (isalpha(user_id[i])) { //First three characters
+                user_type_by_user_ID += toupper(user_id[i]);
+                continue;
+            } else {
+                cout<<"Invalid character(s) found. User ID must start with three letters."<<endl;
+                return false; 
+            }
+
+        } else { //Last five characters
+            if (isdigit(user_id[i])) {
+                continue;
+            } else if (user_id[i] == '.') {
+                cout<<"Decimal point found. User ID must end with five digits."<<endl;
+                return false; 
+            } else {
+                cout<<"Invalid character(s) found. User ID must end with five digits."<<endl;
+                return false; 
+            }
+        }
+    }
+
+    //Check User Type
+
+    if (user_type_by_user_ID != u_type){
+        cout<<"User Type does not match the type of user mentioned in the User ID."<<endl;
+        return false; // Invalid nomenclature
+    }
+
+    return true; 
 }
 
 
-string User :: Access_Password(){
-    return password;
+bool User :: Is_Valid_User_Id_Del_User(string& user_id, string u_type){
+
+    string user_type_by_user_ID="";
+
+    // Check Length
+    if (user_id.length() != 8) {
+        cout<<"Invalid length. User ID must be 8 AlphaNumeric characters long."<<endl;
+        return false; // Invalid length
+    }
+
+    //Check Characters
+    for (int i=0; i<user_id.length(); i++) { //Run though the 'for' loop for every character in the string 'user_id' 
+        if (i<3) {
+            if (isalpha(user_id[i])) { //First three characters
+                user_type_by_user_ID += toupper(user_id[i]);
+                continue;
+            } else {
+                cout<<"Invalid character(s) found. User ID must start with three letters."<<endl;
+                return false; 
+            }
+
+        } else { //Last five characters
+            if (isdigit(user_id[i])) {
+                continue;
+            } else if (user_id[i] == '.') {
+                cout<<"Decimal point found. User ID must end with five digits."<<endl;
+                return false; 
+            } else {
+                cout<<"Invalid character(s) found. User ID must end with five digits."<<endl;
+                return false; 
+            }
+        }
+    }
+
+    //Check User Type
+
+    if (user_type_by_user_ID != u_type){
+        return false; // Invalid nomenclature
+    }
+
+    //Check if User ID exists in the database
+    if (!Check_User_ID_in_File(user_id)){
+        cout<<"User ID does not exist in the database."<<endl;
+        return false;
+    }
+
+    return true; 
+}
+
+void User :: Mutate_User_Id(){
+    while (true) {
+        cout<<"Enter your User ID: "<<endl;
+        getline(cin, user_id); 
+        string u_type = Access_User_Type();
+        if (Is_Valid_User_Id(user_id, u_type )) {
+            break;
+        } else {
+            cout << "Please enter a valid User ID." << endl;
+        }
+    cout<<"User ID is an alphanumeric of 3 letters ('STU','FAC', or, 'EMP') followed by a 5-digit number (Roll number / Employee ID)."<<endl;
+    }
 }
 
 bool User :: Check_Password_in_File(string provided_password){
-    string File_Name = "Login_Credentials.csv";
+    string File_Name = "Data/Login_Credentials.csv";
     ifstream file(File_Name); //Open the file
 
     if (!file.is_open()) {
@@ -159,12 +232,12 @@ bool User :: Check_Password_in_File(string provided_password){
         string user_type_in_file, user_id_in_file, password_in_file;
         stringstream input_string(row); //To parse the data read into the stringstream
         
-        getline(input_string, user_type_in_file, ','); //Get the user type from the stringstream
-        getline(input_string, user_id_in_file, ','); //Get the user ID from the stringstream
-        getline(input_string, password_in_file, ','); //Get the password from the stringstream
-        
+        getline(input_string, user_type_in_file, ','); 
+        getline(input_string, user_id_in_file, ','); 
+        getline(input_string, password_in_file, ','); 
+
         if (user_id_in_file == user_id) { 
-            if (password_in_file == password) { //Check if the password matches
+            if (password_in_file == provided_password) { //Check if the password matches
                 file.close();
                 return true;
             }
@@ -200,6 +273,26 @@ bool User :: Verify_Password(){
     }
 }
 
+bool User :: Login(){
+   bool verify_user=false;
+   Mutate_User_Id();
+   verify_user = Verify_Password();
+    if (verify_user) {
+        cout<<"Login successful."<<endl;
+        verify_user = true; 
+    } else {
+        cout<<"Login unsuccessful."<<endl;
+    }
+    return verify_user;
+}
+
+
+string User :: Access_Password(){
+    return password;
+}
+
+
+
 void User :: Purchase_Recommendation(string user_id, string date_time){
     string File_Name = "Data/Purchase_Recommendations.csv";
     ofstream file(File_Name, ios::app); //Open the file
@@ -210,9 +303,9 @@ void User :: Purchase_Recommendation(string user_id, string date_time){
 
     string item_type, item_name, item_author, item_publisher, item_ISBN, item_ISBN13, item_price, item_recommended_by, item_recommended_on;
 
-    cout<<"Enter the item type: ";
+    cout<<"Enter the item type (Book/Journal/Magazine/Newspaper): ";
     getline(cin, item_type);
-    cout<<"Enter the item name: ";
+    cout<<"Enter the item name/title: ";
     getline(cin, item_name);
     cout<<"Enter the item author: ";
     getline(cin, item_author);
@@ -221,8 +314,8 @@ void User :: Purchase_Recommendation(string user_id, string date_time){
     cout<<"Enter the item ISBN: ";
     getline(cin, item_ISBN);
 
-    file<<user_id<<", "<<date_time<<item_type<<", "<<item_name<<", "<<item_author<<", "<<item_publisher<<", "<<item_ISBN<<endl;
-    cout<<"Thanks for suggesting. Item added successfully."<<endl;
+    file<<user_id<<", "<<date_time<<", "<<item_type<<", "<<item_name<<", "<<item_author<<", "<<item_publisher<<", "<<item_ISBN<<endl;
+    cout<<"Thanks for suggesting. Item added to the 'Purchase Suggestions' list successfully."<<endl;
     file.close();
 }
 
@@ -235,8 +328,10 @@ void User :: Borrow_Item(string user_id, string issue_date_time, string library_
         return;
     }
     else{
+        cout<<"Item found."<<endl;
         Update_Borrow_Record(user_id, issue_date_time, Get_Issue_Duration(user_id, library_identifier), library_identifier);
         Update_Borrowed_Item_File(user_id, issue_date_time, Get_Issue_Duration(user_id, library_identifier), library_identifier, File_Name);
+        cout<<"Borrowed item file updated."<<endl;
     }   
     
 }
@@ -246,7 +341,7 @@ void User :: Borrow_Item(string user_id, string issue_date_time, string library_
 void Student :: Student_Menu(){
     int selection,start=1,stop=5;
     cout<<"---------------------------------"<<endl;
-    cout<<"**** Welcome Student ****"<<endl;
+    cout<<"**** Student Menu****"<<endl;
     cout<<"---------------------------------"<<endl;
     do {
         cout<<"What do you want to do?"<<endl;
@@ -263,16 +358,19 @@ void Student :: Student_Menu(){
                 }
         case 2: {
                 string where_to_search = Get_Search_File();
-                string column_to_search = Get_Search_Column(where_to_search);
-                string data_to_search = Get_Search_Item(where_to_search, column_to_search);
-                Search_Inventory(where_to_search, column_to_search, data_to_search);
-                Requests_Log(Access_User_Id(), where_to_search, column_to_search, data_to_search, Get_Date_Time() ); //Add to requests log
+                string data_to_search = Get_Search_Item();
+                cout<<"Query is "<<data_to_search<<" in "<<where_to_search<<endl;
+                Search_Inventory(where_to_search, data_to_search);
+                cout<<"Search complete."<<endl;
+                Requests_Log(Access_User_Id(), where_to_search, data_to_search, Get_Date_Time() ); //Add to requests log
                 break;
                 }
         case 3: {
                 cout<<"Provide Library Identifier of the item you want to borrow: "<<endl;
                 string L_Identifier = Get_Library_Identifier();
-                Borrow_Item(Access_User_Id(), Get_Date_Time(), L_Identifier);
+                string u_id = Access_User_Id();
+                string d_t = Get_Date_Time();
+                Borrow_Item(u_id, d_t, L_Identifier);
                 break;
                 }
         case 4: {
@@ -297,7 +395,7 @@ void Student :: Student_Menu(){
 void Faculty :: Faculty_Menu(){
     int selection,start=1,stop=5;
     cout<<"---------------------------------"<<endl;
-    cout<<"**** Welcome Faculty ****"<<endl;
+    cout<<"**** Faculty Menu****"<<endl;
     cout<<"---------------------------------"<<endl;
     do {
         cout<<"What do you want to do?"<<endl;
@@ -314,16 +412,19 @@ void Faculty :: Faculty_Menu(){
                 }
         case 2: {
                 string where_to_search = Get_Search_File();
-                string column_to_search = Get_Search_Column(where_to_search);
-                string data_to_search = Get_Search_Item(where_to_search, column_to_search);
-                Search_Inventory(where_to_search, column_to_search, data_to_search);
-                Requests_Log(Access_User_Id(), where_to_search, column_to_search, data_to_search, Get_Date_Time() ); //Add to requests log
+                string data_to_search = Get_Search_Item();
+                cout<<"Query is "<<data_to_search<<" in "<<where_to_search<<endl;
+                Search_Inventory(where_to_search, data_to_search);
+                cout<<"Search complete."<<endl;
+                Requests_Log(Access_User_Id(), where_to_search, data_to_search, Get_Date_Time() ); //Add to requests log
                 break;
                 }
         case 3: {
                 cout<<"Provide Library Identifier of the item you want to borrow: "<<endl;
                 string L_Identifier = Get_Library_Identifier();
-                Borrow_Item(Access_User_Id(), Get_Date_Time(), L_Identifier);
+                string u_id = Access_User_Id();
+                string d_t = Get_Date_Time();
+                Borrow_Item(u_id, d_t, L_Identifier);
                 break;
                 }
         case 4: {
@@ -347,7 +448,7 @@ void Faculty :: Faculty_Menu(){
 void Guest :: Guest_Menu(){
     int selection,start=1,stop=3;
     cout<<"---------------------------------"<<endl;
-    cout<<"**** Welcome Guest ****"<<endl;
+    cout<<"**** Guest Menu****"<<endl;
     cout<<"---------------------------------"<<endl;
     do {
         cout<<"What do you want to do?"<<endl;
@@ -362,10 +463,11 @@ void Guest :: Guest_Menu(){
                 }
         case 2: {
                 string where_to_search = Get_Search_File();
-                string column_to_search = Get_Search_Column(where_to_search);
-                string data_to_search = Get_Search_Item(where_to_search, column_to_search);
-                Search_Inventory(where_to_search, column_to_search, data_to_search);
-                Requests_Log(Access_User_Id(), where_to_search, column_to_search, data_to_search, Get_Date_Time() ); //Add to requests log
+                string data_to_search = Get_Search_Item();
+                cout<<"Query is "<<data_to_search<<" in "<<" of "<<where_to_search<<endl;
+                Search_Inventory(where_to_search, data_to_search);
+                cout<<"Search complete."<<endl;
+                Requests_Log(Access_User_Id(), where_to_search, data_to_search, Get_Date_Time() ); //Add to requests log
                 break;
                 }
         case 3: {
@@ -397,12 +499,12 @@ void LibraryStaff :: View_Current_Users_List(){
         string user_id_in_file, password_in_file, name_in_file, user_type_in_file;
         stringstream input_string(row); //To parse the data read into the stringstream
         
+        getline(input_string, user_type_in_file, ','); //Get the user type from the stringstream
         getline(input_string, user_id_in_file, ','); //Get the user ID from the stringstream
         getline(input_string, password_in_file, ','); //Get the password from the stringstream
-        getline(input_string, name_in_file, ','); //Get the name from the stringstream
-        getline(input_string, user_type_in_file, ','); //Get the user type from the stringstream
         
-        cout<<user_id_in_file<<", "<<password_in_file<<", "<<name_in_file<<", "<<user_type_in_file<<endl;
+        
+        cout<<user_type_in_file<<","<<user_id_in_file<<","<<password_in_file<<endl;
     }
     file.close();
     return;
@@ -412,11 +514,6 @@ bool LibraryStaff :: Is_Valid_Password(string password){
     
     if ((password.length() < 8) || (password.length() > 15)) {
         cout<<"Password must be between 8 to 15 characters long."<<endl;
-        return false;
-    } 
-    
-    if (password.find(' ')) {
-        cout<<"Password cannot contain spaces."<<endl;
         return false;
     } 
 
@@ -466,7 +563,7 @@ void LibraryStaff :: Add_New_User(){
         getline(cin, user_id); 
         cout<<"Enter the User Type: ";
         getline(cin, user_type);
-        if (Is_Valid_User_Id(user_id, user_type )) {
+        if (Is_Valid_User_Id_Add_User(user_id, user_type )) {
             break;
         } else if (Check_User_ID_in_File(user_id)) {
             cout << "User ID already exists. Please enter a new User ID." << endl;
@@ -490,7 +587,7 @@ void LibraryStaff :: Add_New_User(){
     getline(cin, name);
     
 
-    file<<user_id<<", "<<password<<", "<<name<<", "<<user_type<<endl;
+    file<<user_type<<','<<user_id<<","<<password<<endl;
     cout<<"User added successfully."<<endl;
     file.close();
     return;
@@ -508,7 +605,7 @@ void LibraryStaff :: Delete_User(){
     while (true) {
         cout<<"Enter the User ID of the user to be deleted: ";
         getline(cin, user_id_to_delete); 
-        if (Is_Valid_User_Id(user_id_to_delete, stu_type) || Is_Valid_User_Id(user_id_to_delete, fac_type) || Is_Valid_User_Id(user_id_to_delete, emp_type)) {
+        if (Is_Valid_User_Id_Del_User(user_id_to_delete, stu_type) || Is_Valid_User_Id_Del_User(user_id_to_delete, fac_type) || Is_Valid_User_Id_Del_User(user_id_to_delete, emp_type)) {
             break;
         } else {
             cout << "Invalid input. Please enter a valid User ID." << endl;
@@ -527,18 +624,18 @@ void LibraryStaff :: Delete_User(){
     string row1;
     while (getline(file1, row1)) { 
 
-        string user_id_in_file, password_in_file, name_in_file, user_type_in_file;
+        string user_type_in_file, user_id_in_file, password_in_file;
         stringstream input_string(row1); //To parse the data read into the stringstream
         
+        getline(input_string, user_type_in_file, ','); //Get the user type from the stringstream
         getline(input_string, user_id_in_file, ','); //Get the user ID from the stringstream
         getline(input_string, password_in_file, ','); //Get the password from the stringstream
-        getline(input_string, name_in_file, ','); //Get the name from the stringstream
-        getline(input_string, user_type_in_file, ','); //Get the user type from the stringstream
+        
         
         if (user_id_in_file == user_id_to_delete) { 
             continue;
         } else {
-            file2<<user_id_in_file<<", "<<password_in_file<<", "<<name_in_file<<", "<<user_type_in_file<<endl;
+            file2<<user_type_in_file<<","<<user_id_in_file<<","<<password_in_file<<endl;
         }
     }
     file1.close();
@@ -1671,7 +1768,7 @@ void LibraryStaff :: View_Purchase_Recommendations(){
 void LibraryStaff :: LibraryStaff_Menu(){
     int selection,start=1,stop=8;
     cout<<"---------------------------------"<<endl;
-    cout<<"**** Welcome Library Staff ****"<<endl;
+    cout<<"**** Library Staff Menu****"<<endl;
     cout<<"---------------------------------"<<endl;
     do {
         cout<<"What do you want to do?"<<endl;
@@ -1691,10 +1788,11 @@ void LibraryStaff :: LibraryStaff_Menu(){
                 }
         case 2: {
                 string where_to_search = Get_Search_File();
-                string column_to_search = Get_Search_Column(where_to_search);
-                string data_to_search = Get_Search_Item(where_to_search, column_to_search);
-                Search_Inventory(where_to_search, column_to_search, data_to_search);
-                Requests_Log(Access_User_Id(), where_to_search, column_to_search, data_to_search, Get_Date_Time() ); //Add to requests log
+                string data_to_search = Get_Search_Item();
+                cout<<"Query is "<<data_to_search<<" in "<<where_to_search<<endl;
+                Search_Inventory(where_to_search, data_to_search);
+                cout<<"Search complete."<<endl;
+                Requests_Log(Access_User_Id(), where_to_search, data_to_search, Get_Date_Time() ); //Add to requests log
                 break;
                 }
         case 3: {

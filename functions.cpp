@@ -9,6 +9,8 @@
 #include <cctype> //To use isdigit()
 #include <windows.h> //To use Sleep() in windows 
 #include <cstdlib> //To use random number generator
+#include <filesystem> //To use filesystem [system - > Create Folder]
+
 
 using namespace std;
 
@@ -24,6 +26,24 @@ void Welcome()
     cout<<"Indraprastha Institute of Information Technology-Delhi (IIIT-D)"<<endl;
     cout<<"-------------------------------------------------"<<endl;
 }   
+
+bool Check_File_Exists(string file_path){
+    ifstream file(file_path);
+    return file.good();
+}
+
+bool Check_Folder_Exists(string folder_path){
+    DWORD ftyp = GetFileAttributesA(folder_path.c_str());
+    if (ftyp == INVALID_FILE_ATTRIBUTES){
+        return false;  //something is wrong with your path!
+    }
+
+    if (ftyp & FILE_ATTRIBUTE_DIRECTORY){
+        return true;   // this is a directory!
+    }
+
+    return false;    // this is not a directory!
+}
 
 string Generate_Library_Identifier(string copy_type, int& physical_location){
     string physical_location_string = to_string(physical_location);
@@ -49,6 +69,7 @@ string Generate_Library_Identifier(string copy_type, int& physical_location){
         }
         file.close();
     }
+
 
     if (Check_File_Exists("Data/Modified/Physical_Books.csv")){
         ifstream file("Data/Modified/Physical_Books.csv");
@@ -194,13 +215,10 @@ string Generate_Library_Identifier(string copy_type, int& physical_location){
     return library_identifier;
 }
 
-bool Check_File_Exists(string file_path){
-    ifstream file(file_path);
-    return file.good();
-}
+
 
 bool Is_Valid_Library_Identifier(string& library_identifier){
-    if (library_identifier.length() != 6) {
+    if (library_identifier.length() != 8) {
         return false;
     }
     if (toupper(library_identifier[0]) == 'E' || toupper(library_identifier[0]) == 'P') {
@@ -229,7 +247,7 @@ void Generate_Setup_Files(string original_books_file_path, string original_magaz
     ifstream book_original(original_books_file_path);
     ifstream magazine_original(original_magazines_file_path);
     ifstream journal_original(original_journals_file_path);
-
+    
     // Check if the input file can be opened
     if (!book_original.is_open()) {
         cout << "Error opening input file: " << original_books_file_path << endl;
@@ -247,42 +265,19 @@ void Generate_Setup_Files(string original_books_file_path, string original_magaz
         cout<<"Setup in Progress..."<<endl;
     }
 
-    if (Check_File_Exists("Data/Modified/Electronic_Books.csv")) {        
-        cout<<"Electronic_Books.csv already exists."<<endl;
-    } else {
-        ofstream book_electronic("Data/Modified/Electronic_Books.csv");
-        string row;
-        bool is_header = true;
+    book_original.close();
+    magazine_original.close();
+    journal_original.close();
 
-        while(getline(book_original, row)) {
-            
-            if (is_header) {
-                
-                //Electronic Books
-                book_electronic << "Library_Identifier" << ','; 
-                book_electronic << row << ',';
-                book_electronic << "Physical_Copy_Available" << endl; 
-                is_header = false;
-                continue;
-            }
-
-            string temp_string = ""; //Empty string for temporarily storing non-string data types
-            stringstream input_string(row); //To parse the data read into the string
-            
-            //Electronic Books
-            book_electronic << Generate_Library_Identifier("ELC", physical_location) << ","; //Library Identifier
-            book_electronic << row << ","; 
-            book_electronic << "Available" << endl; //Status
-
-        }
-        book_electronic.close();
-        cout<<"Electronic_Books.csv generated."<<endl;
+    if (!Check_Folder_Exists("Data\\Modified")){
+        
+        system("mkdir Data\\Modified");
     }
-
 
     if (Check_File_Exists("Data/Modified/Physical_Books.csv")) {        
         cout<<"Physical_Books.csv already exists."<<endl;
     } else {
+        ifstream book_original(original_books_file_path);
         ofstream book_physical("Data/Modified/Physical_Books.csv");
         string row;
         bool is_header = true;
@@ -293,11 +288,11 @@ void Generate_Setup_Files(string original_books_file_path, string original_magaz
                 
                 //Physical Books
                 book_physical << "Library_Identifier" << ','; 
-                book_physical << row << ','; 
                 book_physical << "Electronic_Copy_Available" << ','; 
                 book_physical << "Issue_Status" << ','; 
                 book_physical << "Checked_Out_Date_And_Time" << ','; 
-                book_physical << "Issue_Duration" << endl; 
+                book_physical << "Issue_Duration" << ','; 
+                book_physical << row << endl; 
 
                 is_header = false;
                 continue;
@@ -308,20 +303,62 @@ void Generate_Setup_Files(string original_books_file_path, string original_magaz
             
             //Physical Books
             book_physical << Generate_Library_Identifier("PHY", physical_location) << ","; //Library Identifier
-            book_physical << row << ","; //Paste the entire row
-            book_physical << "Available" << ","; //Electronic Copy Status
-            book_physical << "Available" << ","; //Issue Status
-            book_physical << "N/A" << ","; //Checked Out Date and Time
-            book_physical << "N/A" << endl; //Return Date and Time
+            book_physical << "Available" << ','; //Electronic Copy Status
+            book_physical << "Available" << ','; //Issue Status
+            book_physical << "N/A" << ','; //Checked Out Date and Time
+            book_physical << "N/A" << ','; //Return Date and Time
+            book_physical << row << endl; //Paste the entire row
 
         }
+        book_original.close();
         book_physical.close();
         cout<<"Physical_Books.csv generated."<<endl;
     }
 
+
+    if (Check_File_Exists("Data/Modified/Electronic_Books.csv")) {        
+        cout<<"Electronic_Books.csv already exists."<<endl;
+    } else {
+        ifstream book_original(original_books_file_path);
+        ofstream book_electronic("Data/Modified/Electronic_Books.csv");
+        string row;
+        bool is_header = true;
+
+        while(getline(book_original, row)) {
+            
+            if (is_header) {
+                
+                //Electronic Books
+                book_electronic << "Library_Identifier" << ','; 
+                book_electronic << "Physical_Copy_Available"  << ','; 
+                book_electronic <<row << endl;
+                
+                is_header = false;
+                continue;
+            }
+
+            string temp_string = ""; //Empty string for temporarily storing non-string data types
+            stringstream input_string(row); //To parse the data read into the string
+            
+            //Electronic Books
+            book_electronic << Generate_Library_Identifier("ELC", physical_location) << ","; //Library Identifier
+            book_electronic << "Available" << ','; //Status
+            book_electronic <<  row << endl; 
+            
+
+        }
+        book_original.close();
+        book_electronic.close();
+        cout<<"Electronic_Books.csv generated."<<endl;
+    }
+
+
+    
+
     if (Check_File_Exists("Data/Modified/Electronic_Magazines.csv")) {        
         cout<<"Electronic_Magazines.csv already exists."<<endl;
     } else {
+        ifstream magazine_original(original_magazines_file_path);
         ofstream magazine_electronic("Data/Modified/Electronic_Magazines.csv");
         string row;
         bool is_header = true;
@@ -332,8 +369,8 @@ void Generate_Setup_Files(string original_books_file_path, string original_magaz
                 
                 //Electronic Magazines
                 magazine_electronic << "Library_Identifier" << ','; 
-                magazine_electronic << row << ',';
-                magazine_electronic << "Physical_Copy_Available" << endl; 
+                magazine_electronic << "Physical_Copy_Available" << ',';
+                magazine_electronic << row << endl; 
 
                 is_header = false;
                 continue;
@@ -344,10 +381,11 @@ void Generate_Setup_Files(string original_books_file_path, string original_magaz
             
             //Electronic Magazines
             magazine_electronic << Generate_Library_Identifier("ELC", physical_location) << ","; //Library Identifier
-            magazine_electronic << row << ","; 
-            magazine_electronic << "Available" << endl; //Status
+            magazine_electronic << "Available" << ","; 
+            magazine_electronic << row << endl; //Status
 
         }
+        magazine_original.close();
         magazine_electronic.close();
         cout<<"Electronic_Magazines.csv generated."<<endl;
     }
@@ -355,6 +393,7 @@ void Generate_Setup_Files(string original_books_file_path, string original_magaz
     if (Check_File_Exists("Data/Modified/Physical_Magazines.csv")) {        
         cout<<"Physical_Magazines.csv already exists."<<endl;
     } else {
+        ifstream magazine_original(original_magazines_file_path);
         ofstream magazine_physical("Data/Modified/Physical_Magazines.csv");
         string row;
         bool is_header = true;
@@ -365,11 +404,11 @@ void Generate_Setup_Files(string original_books_file_path, string original_magaz
                 
                 //Physical Magazines
                 magazine_physical << "Library_Identifier" << ','; 
-                magazine_physical << row << ','; 
                 magazine_physical << "Electronic_Copy_Available" << ','; 
                 magazine_physical << "Issue_Status" << ','; 
                 magazine_physical << "Checked_Out_Date_And_Time" << ','; 
-                magazine_physical << "Issue_Duration" << endl; 
+                magazine_physical << "Issue_Duration" << ','; 
+                magazine_physical << row << endl; 
 
                 is_header = false;
                 continue;
@@ -380,13 +419,14 @@ void Generate_Setup_Files(string original_books_file_path, string original_magaz
             
             //Physical Magazines 
             magazine_physical << Generate_Library_Identifier("PHY", physical_location) << ","; //Library Identifier
-            magazine_physical << row << ","; //Paste the entire row
             magazine_physical << "Available" << ","; //Electronic Copy Status
             magazine_physical << "Available" << ","; //Issue Status
             magazine_physical << "N/A" << ","; //Checked Out Date and Time
-            magazine_physical << "N/A" << endl; //Return Date and Time
+            magazine_physical << "N/A" << ","; //Return Date and Time
+            magazine_physical << row << endl; //Paste the entire row
 
         }
+        magazine_original.close();
         magazine_physical.close();
         cout<<"Physical_Magazines.csv generated."<<endl;
     }
@@ -394,32 +434,27 @@ void Generate_Setup_Files(string original_books_file_path, string original_magaz
     if (Check_File_Exists("Data/Modified/Electronic_Journals.csv")) {        
         cout<<"Electronic_Journals.csv already exists."<<endl;
     } else {
+        ifstream journal_original(original_journals_file_path);
         ofstream journal_electronic("Data/Modified/Electronic_Journals.csv");
         string row;
-        bool is_header = true;
-
-        while(getline(journal_original, row)) {
-            
-            if (is_header) {
                 
-                //Electronic Journals
-                journal_electronic << "Library_Identifier" << ','; 
-                journal_electronic << "Topic" << ',';
-                journal_electronic << "Physical_Copy_Available" << endl; 
+        // Original Journals File  does not have a header
+        journal_electronic << "Library_Identifier" << ','; 
+        journal_electronic << "Physical_Copy_Available" << ',';
+        journal_electronic << "Topic" << endl;             
 
-                is_header = false;
-                continue;
-            }
+        while(getline(journal_original, row)) { 
 
             string temp_string = ""; //Empty string for temporarily storing non-string data types
             stringstream input_string(row); //To parse the data read into the string
             
             //Electronic Journals
             journal_electronic << Generate_Library_Identifier("ELC", physical_location) << ","; //Library Identifier
-            journal_electronic << row << ","; 
-            journal_electronic << "Available" << endl; //Status
+            journal_electronic << "Available" << ","; 
+            journal_electronic << '"' << row << '"' << endl; //Status
 
         }
+        journal_original.close();
         journal_electronic.close();
         cout<<"Electronic_Journals.csv generated."<<endl;
     }
@@ -427,38 +462,34 @@ void Generate_Setup_Files(string original_books_file_path, string original_magaz
     if (Check_File_Exists("Data/Modified/Physical_Journals.csv")) {        
         cout<<"Physical_Journals.csv already exists."<<endl;
     } else {
+        ifstream journal_original(original_journals_file_path);
         ofstream journal_physical("Data/Modified/Physical_Journals.csv");
         string row;
-        bool is_header = true;
+
+        // Original Journals File  does not have a header
+        journal_physical << "Library_Identifier" << ','; 
+        journal_physical << "Electronic_Copy_Available" << ','; 
+        journal_physical << "Issue_Status" << ','; 
+        journal_physical << "Checked_Out_Date_And_Time" << ','; 
+        journal_physical << "Issue_Duration" <<',';
+        journal_physical << "Topic" << endl; 
+
 
         while(getline(journal_original, row)) {
             
-            if (is_header) {
-                
-                //Physical Journals
-                journal_physical << "Library_Identifier" << ','; 
-                journal_physical << "Topic" << ',';
-                journal_physical << "Electronic_Copy_Available" << ','; 
-                journal_physical << "Issue_Status" << ','; 
-                journal_physical << "Checked_Out_Date_And_Time" << ','; 
-                journal_physical << "Issue_Duration" << endl; 
-
-                is_header = false;
-                continue;
-            }
-
             string temp_string = ""; //Empty string for temporarily storing non-string data types
             stringstream input_string(row); //To parse the data read into the string
             
             //Physical Journals
             journal_physical << Generate_Library_Identifier("PHY", physical_location) << ","; //Library Identifier
-            journal_physical << row << ","; //Paste the entire row
             journal_physical << "Available" << ","; //Electronic Copy Status
             journal_physical << "Available" << ","; //Issue Status
             journal_physical << "N/A" << ","; //Checked Out Date and Time
-            journal_physical << "N/A" << endl; //Return Date and Time
+            journal_physical << "N/A" << ","; //Return Date and Time
+            journal_physical << '"'<< row << '"'<< endl; //Paste the entire row
 
         }
+        journal_original.close();
         journal_physical.close();
         cout<<"Physical_Journals.csv generated."<<endl;
     }
@@ -562,7 +593,7 @@ void Generate_Borrow_Record(){
         borrow_record << "User_Id" << ',';
         borrow_record << "Issue Date & Time" << ',';
         borrow_record << "Issue Duration" << ',';
-        borrow_record << "Library Identifier of the Issued Item" << ',';
+        borrow_record << "Library Identifier of the Issued Item" << endl;
 
         borrow_record.close();
         cout<<"Borrow_Record.csv generated."<<endl;
@@ -628,16 +659,14 @@ void Print_Items(string File_Name){
     string row;
     int row_number = 0;
     while (getline(file, row)) {
-        row_number++;
         stringstream input_string(row);
         string data;
-        int column_number = 0;
-        while (getline(input_string, data, ',')) {
-            column_number++;
-            if (column_number == 1) {
-                cout<<row_number<<". "<<data<<endl;
+        
+        if (row_number > 0) {
+                cout<<row_number<<". ";
             }
-        }
+        cout<<row<<endl;
+        row_number++;
     }
     file.close();
     return;
@@ -665,12 +694,12 @@ void Print_Catalogue_Menu(){
                 electronic_or_not = Get_Valid_Choice(1,2);
                 switch (electronic_or_not) {
                     case 1: { 
-                            Print_Items("Electronic_Books.csv");
+                            Print_Items("Data/Modified/Electronic_Books.csv");
                             cout<<"List ends here."<<endl;
                             break;
                             }
                     case 2: { 
-                            Print_Items("Physical_Books.csv");
+                            Print_Items("Data/Modified/Physical_Books.csv");
                             cout<<"List ends here."<<endl;
                             break;
                             }
@@ -688,12 +717,12 @@ void Print_Catalogue_Menu(){
                 electronic_or_not = Get_Valid_Choice(1,2);
                 switch (electronic_or_not) {
                     case 1: { 
-                            Print_Items("Electronic_Journals.csv");
+                            Print_Items("Data/Modified/Electronic_Journals.csv");
                             cout<<"List ends here."<<endl;
                             break;
                             }
                     case 2: { 
-                            Print_Items("Physical_Journals.csv");
+                            Print_Items("Data/Modified/Physical_Journals.csv");
                             cout<<"List ends here."<<endl;
                             break;
                             }
@@ -711,12 +740,12 @@ void Print_Catalogue_Menu(){
                 electronic_or_not = Get_Valid_Choice(1,2);
                 switch (electronic_or_not) {
                     case 1: { 
-                            Print_Items("Electronic_Magazines.csv");
+                            Print_Items("Data/Modified/Electronic_Magazines.csv");
                             cout<<"List ends here."<<endl;
                             break;
                             }
                     case 2: { 
-                            Print_Items("Physical_Magazines.csv");
+                            Print_Items("Data/Modified/Physical_Magazines.csv");
                             cout<<"List ends here."<<endl;
                             break;
                             }
@@ -734,12 +763,12 @@ void Print_Catalogue_Menu(){
                 electronic_or_not = Get_Valid_Choice(1,2);
                 switch (electronic_or_not) {
                     case 1: { 
-                            Print_Items("Electronic_Newspapers.csv");
+                            Print_Items("Data/Modified/Electronic_Newspaper.csv");
                             cout<<"List ends here."<<endl;
                             break;
                             }
                     case 2: { 
-                            Print_Items("Physical_Newspapers.csv");
+                            Print_Items("Data/Modified/Physical_Newspaper.csv");
                             cout<<"List ends here."<<endl;
                             break;
                             }
@@ -811,9 +840,9 @@ string Get_Search_File(){
                     cout<<"1. Electronic"<<endl;
                     cout<<"2. Physical"<<endl;
                     if (Get_Valid_Choice(1,2) == 1) {
-                        return "Data/Modified/Electronic_Newspapers.csv";
+                        return "Data/Modified/Electronic_Newspaper.csv";
                     } else {
-                        return "Data/Modified/Physical_Newspapers.csv";
+                        return "Data/Modified/Physical_Newspaper.csv";
                     }
                     break;
                     }
@@ -828,48 +857,6 @@ string Get_Search_File(){
     
 }
 
-string Get_Search_Column(string File_Name){
-    if (File_Name=="Data/Modified/Electronic_Books.csv"){
-        cout<<"What would you like to search by?"<<endl;
-        cout<<"1. Title"<<endl;
-        cout<<"2. Author"<<endl;
-        cout<<"3. ISBN"<<endl;        
-        int choice = Get_Valid_Choice(1,3);
-        switch(choice){
-            case 1: return "title";
-            case 2: return "authors";
-            case 3: return "isbn";
-        }
-    } else if (File_Name=="Data/Modified/Physical_Books.csv"){
-        cout<<"What would you like to search by?"<<endl;
-        cout<<"1. Title"<<endl;
-        cout<<"2. Author"<<endl;
-        cout<<"3. ISBN"<<endl;             
-        int choice = Get_Valid_Choice(1,3);
-        switch(choice){
-            case 1: return "title";
-            case 2: return "authors";
-            case 3: return "isbn";
-        }
-    } else if (File_Name=="Data/Modified/Electronic_Journals.csv"){
-        return "Topic";
-    } else if (File_Name=="Data/Modified/Physical_Journals.csv"){
-        return "Topic";
-    } else if (File_Name=="Data/Modified/Electronic_Magazines.csv"){
-        return "publication";
-    } else if (File_Name=="Data/Modified/Physical_Magazines.csv"){
-        return "publication";
-    } else if (File_Name=="Data/Modified/Electronic_Newspapers.csv"){
-        return "Name";
-    } else if (File_Name=="Data/Modified/Physical_Newspapers.csv"){
-        return "Name";
-    } else {
-        cout<<"Error: File '"<<File_Name<<"' not found."<<endl;
-        return "";
-    }
-
-}
-
 string Get_Search_Item(){
     string search_item;
     cout<<"Enter the search term: ";
@@ -878,7 +865,7 @@ string Get_Search_Item(){
 }
 
 
-void Search_Inventory(string File_Name,  string Search_Column, string Search_Term){
+void Search_Inventory(string File_Name, string Search_Term){
 
     ifstream file(File_Name);
 
@@ -887,34 +874,24 @@ void Search_Inventory(string File_Name,  string Search_Column, string Search_Ter
         return;
     }
 
-    string row, row_header;
-    int row_number = 0;
-    int found=0;
-    bool header_printed=false;
-
+    // Print row if the search term is found in the search column
+    int found = 0;
+    string row;
     while (getline(file, row)) {
-        if (row_number==0){
-            row_header=row;
-        }
-        row_number++;
-        stringstream input_string(row);
+        istringstream input_string(row);
         string data;
-        int column_number = 0;
-        while (getline(input_string, data, ',')) {
-            column_number++;
-            if (column_number == 1) {
-                if (data == Search_Term) {
-                    if (header_printed==false){
-                        cout<<"Search Results:"<<endl;
-                        cout<< row_header <<endl;
-                        header_printed=true;
-                    }
-                    cout<<row_number<<". "<<row<<endl;
-                    found++;
-                }
-            }
+        char current_character;
+        bool inside_quotes = false;
+
+        if (row.find(Search_Term) != string::npos) {
+            found++;
+            cout<<"Result "<<found<<": ";
+            cout<<row<<endl;
         }
+        
     }
+
+
     if (found==0){
         cout<<"No results found."<<endl;
     } else {
@@ -930,16 +907,16 @@ string Get_Date_Time(){
     return Date_Time;
 }
 
-void Requests_Log(string User_Id,string File_Name,  string Search_Column, string Search_Term, string Date_Time){
+void Requests_Log(string User_Id,string File_Name, string Search_Term, string Date_Time){
     
     if (Check_File_Exists("Data/Requests_Log.csv")) {        
         ofstream file("Data/Requests_Log.csv", ios::app);
-        file<<User_Id<<","<<File_Name<<","<<Search_Column<<","<<Search_Term<<","<<Date_Time<<endl;
+        file<<User_Id<<","<<File_Name<<","<<Search_Term<<","<<Date_Time<<endl;
         file.close();
     } else {
         ofstream file("Data/Requests_Log.csv");
-        file<<"User_Id"<<","<<"File_Name"<<","<<"Search_Column"<<","<<"Search_Term"<<","<<"Date_Time"<<endl;
-        file<<User_Id<<","<<File_Name<<","<<Search_Column<<","<<Search_Term<<","<<Date_Time<<endl;
+        file<<"User_Id"<<","<<"File_Name"<<","<<"Search_Term"<<","<<"Date_Time"<<endl;
+        file<<User_Id<<","<<File_Name<<","<<Search_Term<<","<<Date_Time<<endl;
         file.close();
     }
 
@@ -974,11 +951,11 @@ bool Is_Present_In_File(string File_Name, string Library_Identifier){
         stringstream input_string(row);
         string data;
         while (getline(input_string, data, ',')) {
-                if (data == Library_Identifier) {
-                    file.close();
-                    return true;
-                }
+            if (data == Library_Identifier) {
+                file.close();
+                return true;
             }
+        }
     }
     file.close();
     return false;
@@ -992,8 +969,8 @@ string Find_File(string library_identifier){
     string File_PJournal = "Data/Modified/Physical_Journals.csv";
     string File_EMagazine = "Data/Modified/Electronic_Magazines.csv";
     string File_PMagazine = "Data/Modified/Physical_Magazines.csv";
-    string File_ENewspaper = "Data/Modified/Electronic_Newspapers.csv";
-    string File_PNewspaper = "Data/Modified/Physical_Newspapers.csv";
+    string File_ENewspaper = "Data/Modified/Electronic_Newspaper.csv";
+    string File_PNewspaper = "Data/Modified/Physical_Newspaper.csv";
 
     if (Is_Present_In_File(File_EBook, library_identifier)){
         return File_EBook;
@@ -1014,9 +991,8 @@ string Find_File(string library_identifier){
     } else {
         return "";
     }
-
-    return "";
     
+    return "";
 }
 
 string Get_Issue_Duration(string u_id, string l_identifier){
@@ -1055,135 +1031,79 @@ void Update_Borrowed_Item_File(string u_id,  string i_d_t, string i_duration, st
     }
 
     if (l_identifier[0]=='E'){
+        cout<<"This is an electronic item. It need not be returned." <<endl;
+        file1.close();
+        file2.close();
+        remove("Data/temp.csv");
         return ;
     } 
 
     else{
         string row;
-        string row_number=0;
         while (getline(file1, row)){
+            int column_count = 0;
+            bool is_row = false;
             stringstream input_string(row);
             string data;
             while (getline(input_string, data, ',')) {
                 if (data == l_identifier) {
-                    file2<<l_identifier<<",";
-                    if (f_name=="Data/Modified/Physical_Books.csv"){
-                        string temp;
-                        getline(input_string, temp, ',');
-                        file2<<temp<<","; //book_id
-                        getline(input_string, temp, ',');
-                        file2<<temp<<","; //goodreads_book_id
-                        getline(input_string, temp, ',');
-                        file2<<temp<<","; //best_book_id
-                        getline(input_string, temp, ',');
-                        file2<<temp<<","; //work_id
-                        getline(input_string, temp, ',');
-                        file2<<temp<<","; //books_count
-                        getline(input_string, temp, ',');
-                        file2<<temp<<","; //isbn
-                        getline(input_string, temp, ',');
-                        file2<<temp<<","; //isbn13
-                        getline(input_string, temp, ',');
-                        file2<<temp<<","; //authors
-                        getline(input_string, temp, ',');
-                        file2<<temp<<","; //original_publication_year
-                        getline(input_string, temp, ',');
-                        file2<<temp<<","; //original_title
-                        getline(input_string, temp, ',');
-                        file2<<temp<<","; //title
-                        getline(input_string, temp, ',');
-                        file2<<temp<<","; //language_code
-                        getline(input_string, temp, ',');
-                        file2<<temp<<","; //average_rating
-                        getline(input_string, temp, ',');
-                        file2<<temp<<","; //ratings_count
-                        getline(input_string, temp, ',');
-                        file2<<temp<<","; //work_ratings_count
-                        getline(input_string, temp, ',');
-                        file2<<temp<<","; //work_text_reviews_count
-                        getline(input_string, temp, ',');
-                        file2<<temp<<","; //ratings_1
-                        getline(input_string, temp, ',');
-                        file2<<temp<<","; //ratings_2
-                        getline(input_string, temp, ',');
-                        file2<<temp<<","; //ratings_3
-                        getline(input_string, temp, ',');
-                        file2<<temp<<","; //ratings_4
-                        getline(input_string, temp, ',');
-                        file2<<temp<<","; //ratings_5
-                        getline(input_string, temp, ',');
-                        file2<<temp<<","; //image_url
-                        getline(input_string, temp, ',');
-                        file2<<temp<<","; //small_image_url
-                        getline(input_string, temp, ',');
-                        file2<<temp<<","; //Electronic_Copy_Available
-                        getline(input_string, temp, ',');
-                        file2<<"Checked Out"<<","; //Issue_Status
-                        getline(input_string, temp, ',');
-                        file2<<i_d_t<<","; //Checked_Out_Date_And_Time
-                        getline(input_string, temp, ',');
-                        file2<<i_duration<<endl; //Issue_Duration
-                    }
-                    else if (f_name=="Data/Modified/Physical_Journals.csv"){
-                        string temp;
-                        getline(input_string, temp, ',');
-                        file2<<temp<<","; //Topic
-                        getline(input_string, temp, ',');
-                        file2<<temp<<","; //Electronic_Copy_Available
-                        getline(input_string, temp, ',');
-                        file2<<"Checked Out"<<","; //Issue_Status
-                        getline(input_string, temp, ',');
-                        file2<<i_d_t<<","; //Checked_Out_Date_And_Time
-                        getline(input_string, temp, ',');
-                        file2<<i_duration<<endl; //Issue_Duration
-                    }
-                    else if (f_name=="Data/Modified/Physical_Magazines.csv"){
-                        string temp;
-                        getline(input_string, temp, ',');
-                        file2<<temp<<","; //Publication
-                        getline(input_string, temp, ',');
-                        file2<<temp<<","; //rank
-                        getline(input_string, temp, ',');
-                        file2<<temp<<","; //totalPaid
-                        getline(input_string, temp, ',');
-                        file2<<temp<<","; //wordRate
-                        getline(input_string, temp, ',');
-                        file2<<temp<<","; //daysToBePaid
-                        getline(input_string, temp, ',');
-                        file2<<temp<<","; //paymentDifficulty
-                        getline(input_string, temp, ',');
-                        file2<<temp<<","; //rank_totalPaid
-                        getline(input_string, temp, ',');
-                        file2<<temp<<","; //rank_wordRate
-                        getline(input_string, temp, ',');
-                        file2<<temp<<","; //rank_daysToBePaid
-                        getline(input_string, temp, ',');
-                        file2<<temp<<","; //rank_paymentDifficulty
-                        getline(input_string, temp, ',');
-                        file2<<temp<<","; //Electronic_Copy_Available
-                        getline(input_string, temp, ',');
-                        file2<<"Checked Out"<<","; //Issue_Status
-                        getline(input_string, temp, ',');
-                        file2<<i_d_t<<","; //Checked_Out_Date_And_Time
-                        getline(input_string, temp, ',');
-                        file2<<i_duration<<endl; //Issue_Duration
-                    }
-                    else { //Physical Newspaper
-                        string temp;
-                        getline(input_string, temp, ',');
-                        file2<<temp<<","; //Name
-                        getline(input_string, temp, ',');
-                        file2<<temp<<","; //Electronic_Copy_Available
-                        getline(input_string, temp, ',');
-                        file2<<"Checked Out"<<","; //Issue_Status
-                        getline(input_string, temp, ',');
-                        file2<<i_d_t<<","; //Checked_Out_Date_And_Time
-                        getline(input_string, temp, ',');
-                        file2<<i_duration<<endl; //Issue_Duration
-                    }
-                } else {
-                    file2<<row<<endl;
+                    is_row = true;
                 }
+
+                if (is_row){
+                    if (f_name=="Data/Modified/Physical_Books.csv"){
+                        if (column_count== 2){
+                            file2<<"Checked_Out"<<","; //Issue Status
+                        } else if (column_count== 3){
+                            file2<<i_d_t<<","; //Checked Out Date and Time
+                        } else if (column_count== 4){
+                            file2<<i_duration<<","; //Issue Duration
+                        } else {
+                            file2<<data<<",";
+                            
+                        }
+                    } else if (f_name=="Data/Modified/Physical_Journals.csv"){
+                        if (column_count== 2){
+                            file2<<"Checked_Out"<<","; //Issue Status
+                        } else if (column_count== 3){
+                            file2<<i_d_t<<","; //Checked Out Date and Time
+                        } else if (column_count== 4){
+                            file2<<i_duration<<","; //Issue Duration
+                        } else {
+                            file2<<data<<",";
+                        }
+                    } else if (f_name=="Data/Modified/Physical_Magazines.csv"){
+                        if (column_count== 2){
+                            file2<<"Checked_Out"<<","; //Issue Status
+                        } else if (column_count== 3){
+                            file2<<i_d_t<<","; //Checked Out Date and Time
+                        } else if (column_count== 4){
+                            file2<<i_duration<<","; //Issue Duration
+                        } else {
+                            file2<<data<<",";
+                            
+                        }
+                    } else { //Physical Newspaper
+                        if (column_count== 2){
+                            file2<<"Checked_Out"<<","; //Issue Status
+                        } else if (column_count== 3){
+                            file2<<i_d_t<<","; //Checked Out Date and Time
+                        } else if (column_count== 4){
+                            file2<<i_duration<<","; //Return Date and Time
+                        }   else {
+                            file2<<data<<",";
+                            
+                        }
+                        
+                    }
+
+                }
+                column_count++;
+            }
+            if (!is_row){
+                file2<<row<<endl;
+            } else {
+                file2<<endl;
             }
         }
     }

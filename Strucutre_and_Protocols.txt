@@ -67,7 +67,7 @@
         $ Electronic_Copy_Available
         $ Issue_Status: Available/ Checked_out
         $ Checked_Out_Date_And_Time
-        $ Return Date & Time
+        $ Issue Duration
     -> Electronic_Copy
         $ Library_Identifier
         $ Physical_Copy_Available
@@ -98,6 +98,7 @@
         $ Physical_Copy: PHY12345
         $ Electronic_Copy: ELC12345
     -> Must be unique
+    -> For Physical Copies: The 5-digit number is the stack number of the item in the library [Physical Location]
     
 % Borrow_Items:
     -> Student:
