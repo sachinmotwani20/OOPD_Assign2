@@ -657,6 +657,7 @@ void Generate_Borrow_Record(){
         borrow_record<<"STU12345"<<","<<"27/9/2023 14:7:21"<<","<<"N/A"<<","<<"ELC10005"<<endl;
         borrow_record<<"STU12345"<<","<<"27/9/2023 14:6:42"<<","<<"N/A"<<","<<"ELC10026"<<endl;
         borrow_record<<"FAC12345"<<","<<"27/9/2023 14:6:42"<<","<<"N/A"<<","<<"ELC10026"<<endl;
+        borrow_record<<"FAC12345"<<","<<"27/9/2021 14:6:42"<<","<<"N/A"<<","<<"ELC10026"<<endl;
 
         borrow_record.close();
         cout<<"Borrow_Record.csv generated."<<endl;

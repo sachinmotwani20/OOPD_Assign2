@@ -317,18 +317,51 @@ void User :: Purchase_Recommendation(string user_id, string date_time){
     file.close();
 }
 
+bool User :: Item_Checked_Out(string l_iden, string f_name){
+    string File_Name = Find_File(l_iden);
+    ifstream file(File_Name); //Open the file
+
+    if (!file.is_open()) {
+        cout << "Error opening user database file: " << File_Name << endl;
+    }
+
+    if (l_iden[0]!='E'){
+        string row;
+        while (getline(file, row)) { 
+
+            string issue_status;
+            stringstream input_string(row); 
+            string temp = "";
+            getline(input_string, temp, ','); 
+            getline(input_string, temp, ','); 
+            getline(input_string, issue_status, ',');  
+
+            if (issue_status == "Checked_Out") { 
+                file.close();
+                return true;
+            }   
+        }
+    }
+    file.close();
+    return false;
+}
+
 void User :: Borrow_Item(string user_id, string issue_date_time, string library_identifier){
     
-    string File_Name  = Find_File(library_identifier);
+    string F_Name  = Find_File(library_identifier);
 
-    if (File_Name=="") {
+    if (F_Name=="") {
         cout<<"Item not found."<<endl;
+        return;
+    } else if (Item_Checked_Out(library_identifier, F_Name))
+    {
+        cout<<"Item already checked out."<<endl;
         return;
     }
     else{
         cout<<"Item found."<<endl;
         Update_Borrow_Record(user_id, issue_date_time, Get_Issue_Duration(user_id, library_identifier), library_identifier);
-        Update_Borrowed_Item_File(user_id, issue_date_time, Get_Issue_Duration(user_id, library_identifier), library_identifier, File_Name);
+        Update_Borrowed_Item_File(user_id, issue_date_time, Get_Issue_Duration(user_id, library_identifier), library_identifier, F_Name);
         cout<<"Borrowed item file updated."<<endl;
     }   
     
@@ -1793,7 +1826,8 @@ void LibraryStaff :: View_Purchase_Recommendations(){
     file.close();
 }
 
-void LibraryStaff :: Print_EJournal_Statistics(){
+int LibraryStaff :: Print_EJournal_Statistics(){
+    int subs_req=0;
     string EJournal_File = "Data/Modified/Electronic_Journals.csv";
     string Borrow_Record = "Data/Borrow_Record.csv";
 
@@ -1809,6 +1843,8 @@ void LibraryStaff :: Print_EJournal_Statistics(){
 
     string row;
     int row_number = 0;
+    int Current_Year = Access_Current_Year();
+    cout<<"Current Year: "<<Current_Year<<endl;
     while (getline(file1, row)){
         string l_id_in_file="";
         stringstream input_string(row);
@@ -1823,6 +1859,11 @@ void LibraryStaff :: Print_EJournal_Statistics(){
             stringstream input_string1(row1);
             getline(input_string1,temp, ','); //User ID
             getline(input_string1,temp, ','); //Issue Date
+            
+            string issue_year = temp.substr(5,4); //If current year != issue year, continue
+            if(issue_year!=to_string(Current_Year)){
+                continue;
+            }
             getline(input_string1,temp, ','); //Issue Duration
             getline(input_string1, l_id_in_borrow_record, ','); //Got L_ID from Borrow Record File
             if(l_id_in_file==l_id_in_borrow_record){
@@ -1833,10 +1874,11 @@ void LibraryStaff :: Print_EJournal_Statistics(){
         file2.seekg(0, ios::beg);
         if (row_number!=0 && count!=0){
             cout<<setw(9)<<l_id_in_file<<" : "<<count<<endl;
+            subs_req++;
         }
         row_number++;
     }
-    
+    return subs_req;
 }
 
 void LibraryStaff :: Calculate_EJournal_Demand(){
@@ -1852,8 +1894,10 @@ void LibraryStaff :: Calculate_EJournal_Demand(){
     }
     file.close();
     cout<<"The number of electronic journals in the library is "<<count<<endl;
-    cout<<"The library_identifier of the electronic journals and the corresponding number of times those were borrowed:"<<endl;
-    Print_EJournal_Statistics();
+    cout<<"The library_identifier of the electronic journals and the corresponding number of times those were borrowed in the current year:"<<endl;
+    int Subs_Req = Print_EJournal_Statistics();
+    cout<<"Assuming each journal subscription costs 10 USD, the bare minimum budget required to accommodate all the borrowed journal requirements this year is : "<<endl;
+    cout<<Subs_Req*10<<" USD"<<endl;
 }
 
 void LibraryStaff :: LibraryStaff_Menu(){

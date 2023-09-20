@@ -42,6 +42,7 @@ class User{
         bool Verify_Password();
         bool Check_Password_in_File(string);
         //Borrowed Items
+        bool Item_Checked_Out(string, string);
         void Borrow_Item(string, string, string);
         void Borrow_Item_Loan(string, string, string);
         void Borrow_On_Loan_Menu(string,string);
@@ -84,10 +85,14 @@ class Guest : public User{
 };
 
 class LibraryStaff : public User{ 
+    int current_year = 2023;
     public:
     LibraryStaff (){ //Constructor 
         cout<<"Welcome, Library Staff!"<<endl;
         Mutate_User_Type("EMP");
+    }
+    int Access_Current_Year(){
+        return current_year;
     }
     void LibraryStaff_Menu();
     void Manage_Users_Menu();
@@ -116,7 +121,7 @@ class LibraryStaff : public User{
     void Delete_Physical_Newspaper();
     void View_Requests_Logs();
     void View_Purchase_Recommendations();
-    void Print_EJournal_Statistics();
+    int Print_EJournal_Statistics();
     void Calculate_EJournal_Demand();
 };
 
